@@ -248,7 +248,7 @@ export default function CheckoutPage() {
                     value={formData.customer_phone}
                     onChange={handleChange}
                     required
-                    placeholder="+56912345678"
+                    placeholder="+56972086522"
                     className="w-full rounded-2xl border border-border px-4 py-3 outline-none focus:border-coffee focus:ring-4 focus:ring-coffee/10"
                   />
                 </div>

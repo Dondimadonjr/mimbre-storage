@@ -2,8 +2,9 @@
 
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
-export default function PaymentResultPage() {
+function PaymentResultContent() {
   const searchParams = useSearchParams()
   const status = searchParams.get('status')
   const orderId = searchParams.get('orderId')
@@ -111,5 +112,13 @@ export default function PaymentResultPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function PaymentResultPage() {
+  return (
+    <Suspense fallback={null}>
+      <PaymentResultContent />
+    </Suspense>
   )
 }

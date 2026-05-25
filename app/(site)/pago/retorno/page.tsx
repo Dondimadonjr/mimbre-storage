@@ -1,12 +1,22 @@
 'use client'
 
 import { useSearchParams, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect } from 'react'
 
-export default function PaymentReturnPage() {
+function PaymentReturnLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-cream">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-coffee mx-auto mb-4" />
+        <p className="text-text-secondary">Procesando tu pago...</p>
+      </div>
+    </div>
+  )
+}
+
+function PaymentReturnContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const confirmPayment = async () => {
@@ -42,12 +52,13 @@ export default function PaymentReturnPage() {
     confirmPayment()
   }, [searchParams, router])
 
+  return <PaymentReturnLoading />
+}
+
+export default function PaymentReturnPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-coffee mx-auto mb-4" />
-        <p className="text-text-secondary">Procesando tu pago...</p>
-      </div>
-    </div>
+    <Suspense fallback={<PaymentReturnLoading />}>
+      <PaymentReturnContent />
+    </Suspense>
   )
 }
