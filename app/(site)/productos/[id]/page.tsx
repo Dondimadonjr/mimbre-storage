@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react";
 import Image from 'next/image'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase/client'
 import { formatCurrency } from '@/lib/format'
 import { addToCart } from '@/lib/cart'
 import type { Product } from '@/types/product'

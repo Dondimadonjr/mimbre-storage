@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase/client";
 import { formatCurrency } from "@/lib/format";
 import AdminProductForm from "@/components/AdminProductForm";
 import type { Product } from "@/types/product";

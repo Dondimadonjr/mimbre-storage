@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import { confirmWebpayTransaction } from '@/lib/webpay'
 import type { WebpayConfirmRequest } from '@/types/order'
 

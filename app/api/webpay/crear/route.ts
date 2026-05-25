@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import {
   createWebpayTransaction,
   validateAmount,
@@ -39,13 +39,6 @@ export async function POST(request: NextRequest) {
       !body.customer.address
     ) {
       return badRequest('Faltan datos del cliente')
-    }
-
-    if (!supabaseAdmin) {
-      return NextResponse.json(
-        { message: 'Error de configuracion del servidor' },
-        { status: 500 }
-      )
     }
 
     const requestedItems = new Map<string, number>()
