@@ -1,0 +1,53 @@
+'use client'
+
+import { useSearchParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+
+export default function PaymentReturnPage() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const confirmPayment = async () => {
+      const tokenWs = searchParams.get('token_ws')
+
+      if (!tokenWs) {
+        router.push('/pago/resultado?status=error')
+        return
+      }
+
+      try {
+        const response = await fetch('/api/webpay/confirmar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token_ws: tokenWs }),
+        })
+
+        const data = await response.json()
+
+        if (response.ok) {
+          router.push(
+            `/pago/resultado?status=success&orderId=${data.orderId}`
+          )
+        } else {
+          router.push(`/pago/resultado?status=error&message=${encodeURIComponent(data.message)}`)
+        }
+      } catch (error) {
+        console.error('Error confirming payment:', error)
+        router.push('/pago/resultado?status=error')
+      }
+    }
+
+    confirmPayment()
+  }, [searchParams, router])
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-cream">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-coffee mx-auto mb-4" />
+        <p className="text-text-secondary">Procesando tu pago...</p>
+      </div>
+    </div>
+  )
+}
