@@ -44,11 +44,8 @@ export interface Payment {
 export interface WebpayCreateRequest {
   items: Array<{
     product_id: string;
-    product_name: string;
     quantity: number;
-    unit_price: number;
   }>;
-  total: number;
   customer: {
     name: string;
     email: string;

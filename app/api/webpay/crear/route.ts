@@ -7,66 +7,124 @@ import {
   generateSessionId,
 } from '@/lib/webpay'
 import type { WebpayCreateRequest } from '@/types/order'
+import type { Product } from '@/types/product'
+
+type ProductPaymentData = Pick<
+  Product,
+  'id' | 'name' | 'price' | 'available' | 'stock'
+>
+
+function badRequest(message: string) {
+  return NextResponse.json({ message }, { status: 400 })
+}
+
+function isValidUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    value
+  )
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body: WebpayCreateRequest = await request.json()
 
-    // Validar que el carrito no esté vacío
     if (!body.items || body.items.length === 0) {
-      return NextResponse.json(
-        { message: 'El carrito está vacío' },
-        { status: 400 }
-      )
+      return badRequest('El carrito esta vacio')
     }
 
-    // Validar datos del cliente
     if (
       !body.customer.name ||
       !body.customer.email ||
       !body.customer.phone ||
       !body.customer.address
     ) {
-      return NextResponse.json(
-        { message: 'Faltan datos del cliente' },
-        { status: 400 }
-      )
-    }
-
-    // Validar monto
-    const amountValidation = validateAmount(body.total)
-    if (!amountValidation.valid) {
-      return NextResponse.json(
-        { message: amountValidation.message },
-        { status: 400 }
-      )
-    }
-
-    // Recalcular total en el servidor (seguridad)
-    const calculatedTotal = body.items.reduce(
-      (acc, item) => acc + item.unit_price * item.quantity,
-      0
-    )
-
-    if (calculatedTotal !== body.total) {
-      return NextResponse.json(
-        { message: 'El total no coincide. Recargá la página.' },
-        { status: 400 }
-      )
+      return badRequest('Faltan datos del cliente')
     }
 
     if (!supabaseAdmin) {
       return NextResponse.json(
-        { message: 'Error de configuración del servidor' },
+        { message: 'Error de configuracion del servidor' },
         { status: 500 }
       )
     }
 
-    // Generar buy_order y session_id únicos
+    const requestedItems = new Map<string, number>()
+
+    for (const item of body.items) {
+      if (!item.product_id || !isValidUuid(item.product_id)) {
+        return badRequest('Uno o mas productos no son validos')
+      }
+
+      if (!Number.isInteger(item.quantity) || item.quantity <= 0) {
+        return badRequest('La cantidad de cada producto debe ser mayor a cero')
+      }
+
+      requestedItems.set(
+        item.product_id,
+        (requestedItems.get(item.product_id) ?? 0) + item.quantity
+      )
+    }
+
+    const productIds = Array.from(requestedItems.keys())
+
+    const { data: products, error: productsError } = await supabaseAdmin
+      .from('products')
+      .select('id, name, price, available, stock')
+      .in('id', productIds)
+      .returns<ProductPaymentData[]>()
+
+    if (productsError) {
+      console.error('Error loading products for payment:', productsError)
+      return NextResponse.json(
+        { message: 'Error al validar los productos' },
+        { status: 500 }
+      )
+    }
+
+    if (!products || products.length !== productIds.length) {
+      return badRequest('Uno o mas productos no existen')
+    }
+
+    const productsById = new Map(products.map((product) => [product.id, product]))
+
+    for (const [productId, quantity] of requestedItems) {
+      const product = productsById.get(productId)
+
+      if (!product) {
+        return badRequest('Uno o mas productos no existen')
+      }
+
+      if (!product.available) {
+        return badRequest(`El producto "${product.name}" no esta disponible`)
+      }
+
+      if (product.stock < quantity) {
+        return badRequest(`Stock insuficiente para "${product.name}"`)
+      }
+
+      if (!Number.isFinite(product.price) || product.price <= 0) {
+        return NextResponse.json(
+          { message: 'Error al validar el precio del producto' },
+          { status: 500 }
+        )
+      }
+    }
+
+    const calculatedTotal = productIds.reduce((acc, productId) => {
+      const product = productsById.get(productId)
+      const quantity = requestedItems.get(productId) ?? 0
+
+      return acc + (product?.price ?? 0) * quantity
+    }, 0)
+
+    const amountValidation = validateAmount(calculatedTotal)
+    if (!amountValidation.valid) {
+      return badRequest(amountValidation.message || 'El monto no es valido')
+    }
+
     const buyOrder = generateBuyOrder()
     const sessionId = generateSessionId()
 
-    // Crear orden en Supabase
     const { data: order, error: orderError } = await supabaseAdmin
       .from('orders')
       .insert([
@@ -95,15 +153,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Crear items de la orden
-    const orderItems = body.items.map((item) => ({
-      order_id: order.id,
-      product_id: item.product_id,
-      product_name: item.product_name,
-      unit_price: item.unit_price,
-      quantity: item.quantity,
-      subtotal: item.unit_price * item.quantity,
-    }))
+    const orderItems = productIds.map((productId) => {
+      const product = productsById.get(productId)
+      const quantity = requestedItems.get(productId) ?? 0
+
+      return {
+        order_id: order.id,
+        product_id: productId,
+        product_name: product?.name ?? '',
+        unit_price: product?.price ?? 0,
+        quantity,
+        subtotal: (product?.price ?? 0) * quantity,
+      }
+    })
 
     const { error: itemsError } = await supabaseAdmin
       .from('order_items')
@@ -117,7 +179,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Crear transacción con Transbank
     const returnUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/pago/retorno`
 
     const webpayResponse = await createWebpayTransaction(
@@ -127,7 +188,6 @@ export async function POST(request: NextRequest) {
       returnUrl
     )
 
-    // Guardar token en la base de datos para auditoría
     await supabaseAdmin.from('payments').insert([
       {
         order_id: order.id,

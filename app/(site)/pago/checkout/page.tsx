@@ -110,11 +110,8 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           items: items.map((item) => ({
             product_id: item.product_id,
-            product_name: item.name,
             quantity: item.quantity,
-            unit_price: item.price,
           })),
-          total: totals.total,
           customer: {
             name: formData.customer_name.trim(),
             email: formData.customer_email.trim(),
