@@ -25,6 +25,7 @@ export default function AdminLoginPage() {
       if (err) throw err
 
       router.push('/admin')
+      router.refresh()
     } catch (err) {
       console.error('Login error:', err)
       setError('Email o contraseña incorrectos')
