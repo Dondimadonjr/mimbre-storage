@@ -2,6 +2,7 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Suspense, useEffect } from 'react'
+import { clearCart } from '@/lib/cart'
 
 function PaymentReturnLoading() {
   return (
@@ -36,7 +37,11 @@ function PaymentReturnContent() {
 
         const data = await response.json()
 
-        if (response.ok) {
+        if (response.ok && data.status === 'pagado') {
+          clearCart()
+          window.dispatchEvent(new Event('cart-updated'))
+          window.dispatchEvent(new Event('cart:updated'))
+
           router.push(
             `/pago/resultado?status=success&orderId=${data.orderId}`
           )

@@ -1,16 +1,53 @@
-'use client'
-
-import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Suspense } from 'react'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
-function PaymentResultContent() {
-  const searchParams = useSearchParams()
-  const status = searchParams.get('status')
-  const orderId = searchParams.get('orderId')
-  const message = searchParams.get('message')
+type PaymentResultPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
 
-  const isSuccess = status === 'success'
+function getSearchParam(
+  searchParams: Record<string, string | string[] | undefined>,
+  key: string
+) {
+  const value = searchParams[key]
+  return Array.isArray(value) ? value[0] : value
+}
+
+function isValidUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i.test(
+    value
+  )
+}
+
+async function isPaidOrder(orderId: string | undefined) {
+  if (!orderId || !isValidUuid(orderId)) {
+    return false
+  }
+
+  const { data, error } = await supabaseAdmin
+    .from('orders')
+    .select('id')
+    .eq('id', orderId)
+    .eq('status', 'pagado')
+    .maybeSingle()
+
+  if (error) {
+    console.error('Error validating payment result:', error)
+    return false
+  }
+
+  return Boolean(data)
+}
+
+export default async function PaymentResultPage({
+  searchParams,
+}: PaymentResultPageProps) {
+  const params = await searchParams
+  const status = getSearchParam(params, 'status')
+  const orderId = getSearchParam(params, 'orderId')
+  const message = getSearchParam(params, 'message')
+
+  const isSuccess = status === 'success' && (await isPaidOrder(orderId))
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-cream py-12">
@@ -112,13 +149,5 @@ function PaymentResultContent() {
         )}
       </div>
     </div>
-  )
-}
-
-export default function PaymentResultPage() {
-  return (
-    <Suspense fallback={null}>
-      <PaymentResultContent />
-    </Suspense>
   )
 }

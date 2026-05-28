@@ -2,7 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
-import { clearCart, getCart, getCartTotals } from "@/lib/cart";
+import { getCart, getCartTotals } from "@/lib/cart";
 import { formatCurrency } from "@/lib/format";
 import type { CartItem } from "@/types/cart";
 
@@ -134,7 +134,6 @@ export default function CheckoutPage() {
         throw new Error("Webpay no devolvió URL o token.");
       }
 
-      clearCart();
       redirectToWebpay(data.url, data.token);
     } catch (err) {
       console.error("Error checkout:", err);

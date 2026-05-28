@@ -2,6 +2,10 @@ import type { CartItem } from '@/types/cart'
 import { calculateCartTotals } from './format'
 
 const CART_KEY = 'mimbre_store_cart'
+const EMPTY_CART: CartItem[] = []
+
+let cachedCartRaw: string | null | undefined
+let cachedCartItems: CartItem[] = EMPTY_CART
 
 /**
  * Obtiene el carrito del localStorage
@@ -9,14 +13,24 @@ const CART_KEY = 'mimbre_store_cart'
  */
 export function getCart(): CartItem[] {
   if (typeof window === 'undefined') {
-    return []
+    return EMPTY_CART
   }
   try {
     const cart = localStorage.getItem(CART_KEY)
-    return cart ? JSON.parse(cart) : []
+
+    if (cart === cachedCartRaw) {
+      return cachedCartItems
+    }
+
+    cachedCartRaw = cart
+    cachedCartItems = cart ? JSON.parse(cart) : EMPTY_CART
+
+    return cachedCartItems
   } catch (error) {
     console.error('Error reading cart:', error)
-    return []
+    cachedCartRaw = undefined
+    cachedCartItems = EMPTY_CART
+    return EMPTY_CART
   }
 }
 
@@ -28,7 +42,10 @@ export function saveCart(items: CartItem[]): void {
     return
   }
   try {
-    localStorage.setItem(CART_KEY, JSON.stringify(items))
+    const nextCartRaw = JSON.stringify(items)
+    localStorage.setItem(CART_KEY, nextCartRaw)
+    cachedCartRaw = nextCartRaw
+    cachedCartItems = items
   } catch (error) {
     console.error('Error saving cart:', error)
   }
@@ -38,7 +55,7 @@ export function saveCart(items: CartItem[]): void {
  * Agrega un producto al carrito
  */
 export function addToCart(item: Omit<CartItem, 'id'>): CartItem[] {
-  const cart = getCart()
+  const cart = getCart().map((cartItem) => ({ ...cartItem }))
   const existingItem = cart.find((i) => i.product_id === item.product_id)
 
   if (existingItem) {
@@ -58,7 +75,7 @@ export function addToCart(item: Omit<CartItem, 'id'>): CartItem[] {
  * Aumenta la cantidad de un producto
  */
 export function increaseQuantity(productId: string): CartItem[] {
-  const cart = getCart()
+  const cart = getCart().map((cartItem) => ({ ...cartItem }))
   const item = cart.find((i) => i.product_id === productId)
   if (item) {
     item.quantity += 1
@@ -71,7 +88,7 @@ export function increaseQuantity(productId: string): CartItem[] {
  * Disminuye la cantidad de un producto
  */
 export function decreaseQuantity(productId: string): CartItem[] {
-  const cart = getCart()
+  const cart = getCart().map((cartItem) => ({ ...cartItem }))
   const item = cart.find((i) => i.product_id === productId)
   if (item && item.quantity > 1) {
     item.quantity -= 1
@@ -98,6 +115,8 @@ export function clearCart(): void {
     return
   }
   localStorage.removeItem(CART_KEY)
+  cachedCartRaw = null
+  cachedCartItems = EMPTY_CART
 }
 
 /**

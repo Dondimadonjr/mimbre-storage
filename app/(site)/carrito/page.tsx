@@ -18,6 +18,7 @@ import { formatCurrency } from "@/lib/format";
 import type { CartItem } from "@/types/cart";
 
 const CART_EVENT = "cart:updated";
+const EMPTY_CART_SNAPSHOT: CartItem[] = [];
 
 function emitCartUpdate() {
   window.dispatchEvent(new Event(CART_EVENT));
@@ -34,12 +35,12 @@ function subscribeCart(callback: () => void) {
 }
 
 function getCartSnapshot() {
-  if (typeof window === "undefined") return [];
+  if (typeof window === "undefined") return EMPTY_CART_SNAPSHOT;
   return getCart();
 }
 
 function getServerCartSnapshot() {
-  return [];
+  return EMPTY_CART_SNAPSHOT;
 }
 
 export default function CartPage() {
