@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
+import ScrollLink from "@/components/ScrollLink";
 
 const benefits = ["Hecho a mano", "Productos únicos", "Envíos coordinados"];
 
@@ -43,12 +43,12 @@ export default function Hero() {
           </div>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="#productos"
-              className="inline-flex items-center justify-center rounded-full bg-[#8B5E3C] px-8 py-4 text-base font-black text-white shadow-lg shadow-[#8B5E3C]/20 transition duration-300 hover:-translate-y-0.5 hover:bg-[#6F472C] hover:shadow-xl hover:shadow-[#8B5E3C]/25"
+           <ScrollLink
+              href="/#productos"
+              className="rounded-full bg-coffee px-8 py-4 font-bold text-white transition hover:bg-coffee-dark"
             >
               Ver catálogo
-            </Link>
+            </ScrollLink>
 
             <a
               href="https://wa.me/56972086522"

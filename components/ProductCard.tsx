@@ -26,6 +26,8 @@ export default function ProductCard({ product }: ProductCardProps) {
       price: product.price,
       quantity: 1,
       image_url: product.image_url,
+      stock,
+      available: product.available,
     });
 
     setAddedToCart(true);

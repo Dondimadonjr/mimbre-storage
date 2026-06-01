@@ -20,6 +20,10 @@ export default function ProductDetail({
   const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
   const [addedToCart, setAddedToCart] = useState(false)
+  const stock = product?.stock ?? 0
+  const maxQuantity = Math.max(1, stock)
+  const isPurchasable = Boolean(product?.available && stock > 0)
+  const selectedQuantity = Math.min(quantity, maxQuantity)
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -43,14 +47,18 @@ export default function ProductDetail({
   },  [id]);
 
   const handleAddToCart = () => {
-    if (!product) return
+    if (!product || !isPurchasable) return
+
+    const safeQuantity = Math.min(selectedQuantity, stock)
 
     addToCart({
       product_id: product.id,
       name: product.name,
       price: product.price,
-      quantity,
+      quantity: safeQuantity,
       image_url: product.image_url,
+      stock,
+      available: product.available,
     })
 
     setAddedToCart(true)
@@ -171,16 +179,20 @@ export default function ProductDetail({
                 <span className="text-text-secondary">Cantidad:</span>
                 <div className="flex items-center gap-3 border border-border rounded-lg">
                   <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={!product.available}
+                    onClick={() => setQuantity(Math.max(1, selectedQuantity - 1))}
+                    disabled={!isPurchasable}
                     className="w-10 h-10 flex items-center justify-center hover:bg-cream disabled:opacity-50"
                   >
                     −
                   </button>
-                  <span className="w-8 text-center font-medium">{quantity}</span>
+                  <span className="w-8 text-center font-medium">{selectedQuantity}</span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    disabled={!product.available}
+                    onClick={() =>
+                      setQuantity((currentQuantity) =>
+                        Math.min(maxQuantity, currentQuantity + 1)
+                      )
+                    }
+                    disabled={!isPurchasable || selectedQuantity >= stock}
                     className="w-10 h-10 flex items-center justify-center hover:bg-cream disabled:opacity-50"
                   >
                     +
@@ -192,7 +204,7 @@ export default function ProductDetail({
               <div className="space-y-3">
                 <button
                   onClick={handleAddToCart}
-                  disabled={!product.available}
+                  disabled={!isPurchasable}
                   className={`w-full py-4 font-semibold rounded-lg transition-all duration-300 text-white ${
                     addedToCart
                       ? 'bg-green-600'

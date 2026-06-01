@@ -1,8 +1,13 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { getCart, getCartTotals } from "@/lib/cart";
+
+import {
+  getCart,
+  getCartTotals,
+  invalidateCartSnapshot,
+} from "@/lib/cart";
 import { formatCurrency } from "@/lib/format";
 import type { CartItem } from "@/types/cart";
 
@@ -26,6 +31,8 @@ const initialFormData: CheckoutFormData = {
   customer_comment: "",
 };
 
+const WEBPAY_PENDING_KEY = "mimbre_webpay_pending";
+
 function validateEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -35,14 +42,8 @@ function validatePhone(phone: string) {
 }
 
 export default function CheckoutPage() {
-  const [items] = useState<CartItem[]>(() => {
-    if (typeof window === "undefined") return [];
-    return getCart();
-  });
-
-  const totals = useMemo(() => {
-    return getCartTotals(items);
-  }, [items]);
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [cartReady, setCartReady] = useState(false);
 
   const [formData, setFormData] =
     useState<CheckoutFormData>(initialFormData);
@@ -50,15 +51,74 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+      useEffect(() => {
+    const syncCart = () => {
+      invalidateCartSnapshot();
+      setItems([...getCart()]);
+      setCartReady(true);
+    };
+
+    const cameBackFromWebpay = () => {
+      const hasPendingWebpay =
+        sessionStorage.getItem(WEBPAY_PENDING_KEY) === "true";
+
+      const navigationEntry = performance.getEntriesByType(
+        "navigation"
+      )[0] as PerformanceNavigationTiming | undefined;
+
+      const returnedWithBrowserBack =
+        navigationEntry?.type === "back_forward";
+
+      return hasPendingWebpay && returnedWithBrowserBack;
+    };
+
+    const handlePageShow = (event: PageTransitionEvent) => {
+      const hasPendingWebpay =
+        sessionStorage.getItem(WEBPAY_PENDING_KEY) === "true";
+
+      if (hasPendingWebpay && event.persisted) {
+        sessionStorage.removeItem(WEBPAY_PENDING_KEY);
+        window.location.replace("/carrito");
+        return;
+      }
+
+      syncCart();
+    };
+
+    if (cameBackFromWebpay()) {
+      sessionStorage.removeItem(WEBPAY_PENDING_KEY);
+      window.location.replace("/carrito");
+      return;
+    }
+
+    syncCart();
+
+    window.addEventListener("pageshow", handlePageShow);
+    window.addEventListener("storage", syncCart);
+    window.addEventListener("cart:updated", syncCart);
+    window.addEventListener("cart-updated", syncCart);
+
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
+      window.removeEventListener("storage", syncCart);
+      window.removeEventListener("cart:updated", syncCart);
+      window.removeEventListener("cart-updated", syncCart);
+    };
+  }, []);
+
+  const totals = useMemo(() => {
+    return getCartTotals(items);
+  }, [items]);
+
   const handleChange = (
-    event: React.ChangeEvent<
+    event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
     const { name, value } = event.target;
 
-    setFormData((prev) => ({
-      ...prev,
+    setFormData((previousData) => ({
+      ...previousData,
       [name]: value,
     }));
   };
@@ -67,14 +127,21 @@ export default function CheckoutPage() {
     if (items.length === 0) return "El carrito está vacío.";
     if (!formData.customer_name.trim()) return "El nombre es obligatorio.";
     if (!validateEmail(formData.customer_email)) return "El email no es válido.";
+
     if (!validatePhone(formData.customer_phone)) {
       return "El teléfono debe tener al menos 9 dígitos.";
     }
-    if (!formData.customer_address.trim()) return "La dirección es obligatoria.";
+
+    if (!formData.customer_address.trim()) {
+      return "La dirección es obligatoria.";
+    }
+
     return null;
   };
 
   const redirectToWebpay = (url: string, token: string) => {
+    sessionStorage.setItem(WEBPAY_PENDING_KEY, "true");
+
     const form = document.createElement("form");
     form.method = "POST";
     form.action = url;
@@ -89,11 +156,12 @@ export default function CheckoutPage() {
     form.submit();
   };
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
 
     const formError = validateForm();
+
     if (formError) {
       setError(formError);
       return;
@@ -124,7 +192,11 @@ export default function CheckoutPage() {
         }),
       });
 
-      const data = await response.json();
+      const data: {
+        message?: string;
+        url?: string;
+        token?: string;
+      } = await response.json();
 
       if (!response.ok) {
         throw new Error(data.message || "Error al crear la transacción.");
@@ -135,12 +207,23 @@ export default function CheckoutPage() {
       }
 
       redirectToWebpay(data.url, data.token);
-    } catch (err) {
-      console.error("Error checkout:", err);
-      setError(err instanceof Error ? err.message : "Error al procesar el pago.");
+    } catch (caughtError) {
+      console.error("Error checkout:", caughtError);
+
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Error al procesar el pago."
+      );
+
       setLoading(false);
     }
   };
+
+  // Evita renderizar falsamente "carrito vacío" antes de leer localStorage.
+  if (!cartReady) {
+    return null;
+  }
 
   if (items.length === 0) {
     return (
@@ -207,6 +290,7 @@ export default function CheckoutPage() {
                 <label className="mb-2 block text-sm font-medium text-text-dark">
                   Nombre completo *
                 </label>
+
                 <input
                   aria-label="text"
                   type="text"
@@ -223,6 +307,7 @@ export default function CheckoutPage() {
                   <label className="mb-2 block text-sm font-medium text-text-dark">
                     Email *
                   </label>
+
                   <input
                     aria-label="email"
                     type="email"
@@ -238,6 +323,7 @@ export default function CheckoutPage() {
                   <label className="mb-2 block text-sm font-medium text-text-dark">
                     Teléfono *
                   </label>
+
                   <input
                     type="tel"
                     name="customer_phone"
@@ -254,6 +340,7 @@ export default function CheckoutPage() {
                 <label className="mb-2 block text-sm font-medium text-text-dark">
                   Dirección *
                 </label>
+
                 <input
                   type="text"
                   name="customer_address"
@@ -270,6 +357,7 @@ export default function CheckoutPage() {
                   <label className="mb-2 block text-sm font-medium text-text-dark">
                     Comuna
                   </label>
+
                   <input
                     type="text"
                     name="customer_commune"
@@ -284,6 +372,7 @@ export default function CheckoutPage() {
                   <label className="mb-2 block text-sm font-medium text-text-dark">
                     Región
                   </label>
+
                   <select
                     aria-label="customer_region"
                     name="customer_region"
@@ -311,6 +400,7 @@ export default function CheckoutPage() {
                 <label className="mb-2 block text-sm font-medium text-text-dark">
                   Comentario opcional
                 </label>
+
                 <textarea
                   name="customer_comment"
                   value={formData.customer_comment}

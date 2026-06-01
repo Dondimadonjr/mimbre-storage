@@ -5,6 +5,8 @@ export interface CartItem {
   price: number;
   quantity: number;
   image_url: string | null;
+  stock?: number;
+  available?: boolean;
 }
 
 export interface Cart {

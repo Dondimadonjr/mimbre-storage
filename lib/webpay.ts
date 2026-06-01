@@ -15,17 +15,30 @@ import {
 
 const isProduction = process.env.TRANSBANK_ENVIRONMENT === "production";
 
-const commerceCode =
-  process.env.TRANSBANK_COMMERCE_CODE || IntegrationCommerceCodes.WEBPAY_PLUS;
+function getRequiredProductionVariable(
+  name: "TRANSBANK_COMMERCE_CODE" | "TRANSBANK_API_KEY"
+): string {
+  const value = process.env[name];
 
-const apiKey = process.env.TRANSBANK_API_KEY || IntegrationApiKeys.WEBPAY;
+  if (!value) {
+    throw new Error(`Missing ${name} for Webpay production environment`);
+  }
 
-const environment = isProduction
-  ? Environment.Production
-  : Environment.Integration;
+  return value;
+}
 
 const transaction = new WebpayPlus.Transaction(
-  new Options(commerceCode, apiKey, environment)
+  isProduction
+    ? new Options(
+        getRequiredProductionVariable("TRANSBANK_COMMERCE_CODE"),
+        getRequiredProductionVariable("TRANSBANK_API_KEY"),
+        Environment.Production
+      )
+    : new Options(
+        IntegrationCommerceCodes.WEBPAY_PLUS,
+        IntegrationApiKeys.WEBPAY,
+        Environment.Integration
+      )
 );
 
 /**
