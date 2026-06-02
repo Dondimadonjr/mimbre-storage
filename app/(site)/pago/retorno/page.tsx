@@ -24,7 +24,7 @@ function PaymentReturnContent() {
       const tokenWs = searchParams.get('token_ws')
 
       if (!tokenWs) {
-        router.push('/pago/resultado?status=error')
+        window.location.replace('/pago/resultado?status=error')
         return
       }
 
@@ -37,20 +37,27 @@ function PaymentReturnContent() {
 
         const data = await response.json()
 
-        if (response.ok && data.status === 'pagado') {
+        if (response.ok && data.status === 'pagado' && data.orderId) {
           clearCart()
           window.dispatchEvent(new Event('cart-updated'))
           window.dispatchEvent(new Event('cart:updated'))
 
-          router.push(
-            `/pago/resultado?status=success&orderId=${data.orderId}`
-          )
-        } else {
-          router.push(`/pago/resultado?status=error&message=${encodeURIComponent(data.message)}`)
+          const resultUrl = `/pago/resultado?status=success&orderId=${encodeURIComponent(
+            String(data.orderId)
+          )}`
+
+          window.location.replace(resultUrl)
+          return
         }
+
+        const errorMessage = data?.message || 'Pago no procesado'
+
+        window.location.replace(
+          `/pago/resultado?status=error&message=${encodeURIComponent(errorMessage)}`
+        )
       } catch (error) {
         console.error('Error confirming payment:', error)
-        router.push('/pago/resultado?status=error')
+        window.location.replace('/pago/resultado?status=error')
       }
     }
 

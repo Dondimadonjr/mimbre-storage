@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function PaymentReturnResultPage() {
-  return null
+  redirect("/pago/resultado?status=error");
 }
