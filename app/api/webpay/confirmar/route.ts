@@ -3,6 +3,64 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { confirmWebpayTransaction } from '@/lib/webpay'
 import type { WebpayConfirmRequest } from '@/types/order'
 
+type OrderItemStockData = {
+  product_id: string
+  quantity: number
+}
+
+type ProductStockData = {
+  id: string
+  stock: number
+}
+
+async function discountOrderStock(orderId: string) {
+  const { data: orderItems, error: itemsError } = await supabaseAdmin
+    .from('order_items')
+    .select('product_id, quantity')
+    .eq('order_id', orderId)
+    .returns<OrderItemStockData[]>()
+
+  if (itemsError) {
+    console.error('Error loading order items for stock discount:', itemsError)
+    return
+  }
+
+  if (!orderItems || orderItems.length === 0) {
+    console.error('No order items found for stock discount:', { orderId })
+    return
+  }
+
+  for (const item of orderItems) {
+    const { data: product, error: productError } = await supabaseAdmin
+      .from('products')
+      .select('id, stock')
+      .eq('id', item.product_id)
+      .maybeSingle<ProductStockData>()
+
+    if (productError || !product) {
+      console.error('Error loading product for stock discount:', {
+        productId: item.product_id,
+        error: productError,
+      })
+      continue
+    }
+
+    const nextStock = Math.max(Number(product.stock) - Number(item.quantity), 0)
+
+    const { error: updateStockError } = await supabaseAdmin
+      .from('products')
+      .update({ stock: nextStock })
+      .eq('id', product.id)
+
+    if (updateStockError) {
+      console.error('Error updating product stock after payment:', {
+        productId: product.id,
+        error: updateStockError,
+      })
+    }
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body: WebpayConfirmRequest = await request.json()
@@ -39,18 +97,48 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const { data: currentOrder, error: currentOrderError } = await supabaseAdmin
+      .from('orders')
+      .select('id, status')
+      .eq('id', payment.order_id)
+      .single()
+
+    if (currentOrderError || !currentOrder) {
+      console.error('Order not found for payment confirmation:', currentOrderError)
+      return NextResponse.json(
+        { message: 'Orden no encontrada' },
+        { status: 404 }
+      )
+    }
+
     // Determinar estado del pago
     const paymentStatus =
       webpayResponse.responseCode === 0 ? 'pagado' : 'rechazado'
 
     // Actualizar orden
-    const { error: orderError } = await supabaseAdmin
+    const orderUpdate = supabaseAdmin
       .from('orders')
       .update({ status: paymentStatus })
       .eq('id', payment.order_id)
 
+    if (paymentStatus === 'pagado') {
+      orderUpdate.neq('status', 'pagado')
+    }
+
+    const { data: updatedOrder, error: orderError } = await orderUpdate
+      .select('id, status')
+      .maybeSingle()
+
     if (orderError) {
       console.error('Error updating order:', orderError)
+    }
+
+    if (
+      paymentStatus === 'pagado' &&
+      currentOrder.status !== 'pagado' &&
+      updatedOrder
+    ) {
+      await discountOrderStock(payment.order_id)
     }
 
     // Actualizar pago

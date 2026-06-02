@@ -34,17 +34,17 @@ export default async function PaymentResultPage({
   let isPaidOrder = false;
 
   if (status === "success" && orderId) {
-    const { data: order, error: orderError } = await supabaseAdmin
-      .from("orders")
-      .select("id, status")
-      .eq("id", orderId)
-      .maybeSingle();
+  const { data: order } = await supabaseAdmin
+    .from("orders")
+    .select("id, status")
+    .eq("id", orderId)
+    .maybeSingle();
 
-    const { data: payment, error: paymentError } = await supabaseAdmin
-      .from("payments")
-      .select("id, order_id, status, response_code")
-      .eq("order_id", orderId)
-      .maybeSingle();
+  const { data: payment } = await supabaseAdmin
+    .from("payments")
+    .select("id, order_id, status, response_code")
+    .eq("order_id", orderId)
+    .maybeSingle();
 
     const orderStatus = String(order?.status ?? "").trim().toLowerCase();
     const paymentStatus = String(payment?.status ?? "").trim().toLowerCase();
