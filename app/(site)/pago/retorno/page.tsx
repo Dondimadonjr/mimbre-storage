@@ -1,6 +1,6 @@
 'use client'
 
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect } from 'react'
 import { clearCart } from '@/lib/cart'
 
@@ -17,7 +17,6 @@ function PaymentReturnLoading() {
 
 function PaymentReturnContent() {
   const searchParams = useSearchParams()
-  const router = useRouter()
 
   useEffect(() => {
     const confirmPayment = async () => {
@@ -62,7 +61,7 @@ function PaymentReturnContent() {
     }
 
     confirmPayment()
-  }, [searchParams, router])
+  }, [searchParams])
 
   return <PaymentReturnLoading />
 }
