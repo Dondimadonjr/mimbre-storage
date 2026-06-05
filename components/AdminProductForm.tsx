@@ -175,16 +175,16 @@ export default function AdminProductForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-3xl border border-border bg-white p-6 shadow-sm"
+      className="space-y-6 rounded-[2rem] border border-border bg-white/95 p-5 shadow-sm sm:p-6"
     >
       {error && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-2xl border border-red-200 bg-red-50/90 p-4 text-sm font-semibold text-red-700 shadow-sm">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+        <div className="rounded-2xl border border-green-200 bg-green-50/90 p-4 text-sm font-semibold text-green-700 shadow-sm">
           Producto guardado exitosamente.
         </div>
       )}
@@ -199,7 +199,7 @@ export default function AdminProductForm({
           value={formData.name}
           onChange={handleChange}
           required
-          className="w-full rounded-2xl border border-border px-4 py-3 outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+          className="w-full rounded-2xl border border-border bg-white px-4 py-3.5 shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
           placeholder="Ej: Canasto tejido grande"
         />
       </div>
@@ -213,12 +213,12 @@ export default function AdminProductForm({
           value={formData.description || ""}
           onChange={handleChange}
           rows={4}
-          className="w-full rounded-2xl border border-border px-4 py-3 outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+          className="w-full rounded-2xl border border-border bg-white px-4 py-3.5 shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
           placeholder="Descripción del producto..."
         />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 rounded-3xl bg-cream/50 p-4 md:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-medium text-text-dark">
             Precio CLP *
@@ -230,7 +230,7 @@ export default function AdminProductForm({
             onChange={handleChange}
             required
             min={0}
-            className="w-full rounded-2xl border border-border px-4 py-3 outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+            className="w-full rounded-2xl border border-border bg-white px-4 py-3.5 shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
             placeholder="0"
           />
         </div>
@@ -245,7 +245,7 @@ export default function AdminProductForm({
             value={formData.stock}
             onChange={handleChange}
             min={0}
-            className="w-full rounded-2xl border border-border px-4 py-3 outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+            className="w-full rounded-2xl border border-border bg-white px-4 py-3.5 shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
             placeholder="0"
           />
         </div>
@@ -260,7 +260,7 @@ export default function AdminProductForm({
           name="category"
           value={formData.category || ""}
           onChange={handleChange}
-          className="w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+          className="w-full rounded-2xl border border-border bg-white px-4 py-3.5 shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
         >
           <option value="">Seleccionar categoría...</option>
           <option value="Canastos">Canastos</option>
@@ -282,7 +282,7 @@ export default function AdminProductForm({
           type="file"
           accept="image/jpeg,image/png,image/webp,image/gif"
           onChange={handleImageChange}
-          className="w-full rounded-2xl border border-dashed border-border bg-cream px-4 py-3 text-sm"
+          className="w-full rounded-2xl border border-dashed border-border bg-cream/70 px-4 py-3.5 text-sm shadow-sm"
         />
         <p className="mt-2 text-xs text-text-secondary">
           Formatos permitidos: JPG, PNG, WEBP o GIF. Máximo 5MB.
@@ -290,7 +290,7 @@ export default function AdminProductForm({
       </div>
 
       {imagePreview && (
-        <div className="overflow-hidden rounded-3xl border border-border bg-cream">
+        <div className="overflow-hidden rounded-3xl border border-border bg-cream shadow-sm">
           <Image
             src={imagePreview}
             alt="Vista previa"
@@ -302,7 +302,7 @@ export default function AdminProductForm({
         </div>
       )}
 
-      <div className="grid gap-3 rounded-2xl bg-cream p-4 md:grid-cols-2">
+      <div className="grid gap-3 rounded-3xl bg-cream/70 p-4 md:grid-cols-2">
         <label className="flex items-center gap-3 text-sm font-medium text-text-dark">
           <input
             type="checkbox"
@@ -329,7 +329,7 @@ export default function AdminProductForm({
       <button
         type="submit"
         disabled={loading || uploadingImage}
-        className="w-full rounded-full bg-coffee px-6 py-4 font-semibold text-white transition hover:bg-coffee-dark disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-full bg-coffee px-6 py-4 font-bold text-white shadow-lg shadow-coffee/20 transition hover:-translate-y-0.5 hover:bg-coffee-dark disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
       >
         {loading || uploadingImage
           ? uploadingImage

@@ -150,13 +150,13 @@ export default function AdminDashboardClient() {
 
   if (checkingAuth) {
     return (
-      <main className="min-h-screen bg-cream px-4 py-16">
+      <main className="min-h-screen bg-gradient-to-b from-cream via-white to-cream px-4 py-16">
         <div className="mx-auto max-w-7xl">
-          <div className="rounded-3xl border border-border bg-white p-8 shadow-soft">
+          <div className="rounded-[2rem] border border-border bg-white/95 p-8 shadow-soft">
             <p className="text-sm font-semibold text-coffee">
               Verificando acceso...
             </p>
-            <h1 className="mt-2 text-2xl font-bold text-text-dark">
+            <h1 className="mt-2 text-2xl font-black text-text-dark">
               Cargando panel administrador
             </h1>
           </div>
@@ -166,69 +166,69 @@ export default function AdminDashboardClient() {
   }
 
   return (
-    <div className="min-h-screen bg-cream">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-text-dark text-white shadow-lg">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+    <div className="min-h-screen bg-gradient-to-b from-cream via-white to-cream">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-text-dark/95 text-white shadow-lg backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-coffee font-bold shadow-md">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-coffee font-black shadow-md">
               M
             </div>
 
             <div>
-              <h1 className="text-xl font-bold leading-tight">Panel Admin</h1>
+              <h1 className="text-xl font-black leading-tight">Panel Admin</h1>
               <p className="text-xs text-white/60">Gestión de Mimbre Store</p>
             </div>
           </div>
 
           <button
             onClick={handleLogout}
-            className="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700 active:scale-[0.98]"
+            className="rounded-full bg-red-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-red-700 active:scale-[0.98]"
           >
             Salir
           </button>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
         <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-3xl border border-border bg-white p-5 shadow-soft">
-            <p className="text-sm font-medium text-text-secondary">
+          <div className="rounded-[1.75rem] border border-border bg-white/95 p-5 shadow-soft">
+            <p className="text-sm font-semibold text-text-secondary">
               Productos
             </p>
-            <p className="mt-2 text-3xl font-bold text-text-dark">
+            <p className="mt-3 text-3xl font-black text-text-dark">
               {products.length}
             </p>
           </div>
 
-          <div className="rounded-3xl border border-border bg-white p-5 shadow-soft">
-            <p className="text-sm font-medium text-text-secondary">
+          <div className="rounded-[1.75rem] border border-border bg-white/95 p-5 shadow-soft">
+            <p className="text-sm font-semibold text-text-secondary">
               Disponibles
             </p>
-            <p className="mt-2 text-3xl font-bold text-green-700">
+            <p className="mt-3 text-3xl font-black text-green-700">
               {productosDisponibles}
             </p>
           </div>
 
-          <div className="rounded-3xl border border-border bg-white p-5 shadow-soft">
-            <p className="text-sm font-medium text-text-secondary">
+          <div className="rounded-[1.75rem] border border-border bg-white/95 p-5 shadow-soft">
+            <p className="text-sm font-semibold text-text-secondary">
               Stock bajo
             </p>
-            <p className="mt-2 text-3xl font-bold text-yellow-700">
+            <p className="mt-3 text-3xl font-black text-yellow-700">
               {productosStockBajo}
             </p>
           </div>
 
-          <div className="rounded-3xl border border-border bg-white p-5 shadow-soft">
-            <p className="text-sm font-medium text-text-secondary">Órdenes</p>
-            <p className="mt-2 text-3xl font-bold text-coffee">
+          <div className="rounded-[1.75rem] border border-border bg-white/95 p-5 shadow-soft">
+            <p className="text-sm font-semibold text-text-secondary">Órdenes</p>
+            <p className="mt-3 text-3xl font-black text-coffee">
               {totalOrdenes}
             </p>
           </div>
         </section>
 
-        <section className="mb-8 rounded-3xl border border-border bg-white p-3 shadow-soft">
+        <section className="mb-8 rounded-[1.75rem] border border-border bg-white/95 p-3 shadow-soft">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex rounded-2xl bg-cream p-1">
+            <div className="flex rounded-2xl bg-cream/80 p-1">
               <button
                 onClick={() => {
                   setTab("productos");
@@ -263,7 +263,7 @@ export default function AdminDashboardClient() {
             {tab === "productos" && !showForm && (
               <button
                 onClick={handleOpenNewProduct}
-                className="rounded-2xl bg-coffee px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-coffee-dark active:scale-[0.98]"
+                className="rounded-full bg-coffee px-5 py-3 text-sm font-bold text-white shadow-lg shadow-coffee/20 transition hover:-translate-y-0.5 hover:bg-coffee-dark active:scale-[0.98]"
               >
                 + Nuevo producto
               </button>
@@ -277,17 +277,17 @@ export default function AdminDashboardClient() {
               <div className="max-w-3xl">
                 <button
                   onClick={handleCloseForm}
-                  className="mb-5 inline-flex items-center rounded-xl border border-border bg-white px-4 py-2 text-sm font-semibold text-coffee shadow-sm transition hover:bg-cream"
+                  className="mb-5 inline-flex items-center rounded-full border border-border bg-white px-4 py-2 text-sm font-bold text-coffee shadow-sm transition hover:bg-cream"
                 >
                   ← Volver a productos
                 </button>
 
-                <div className="rounded-3xl border border-border bg-white p-5 shadow-soft">
+                <div className="rounded-[2rem] border border-border bg-white/95 p-5 shadow-soft sm:p-6">
                   <div className="mb-5">
                     <p className="text-sm font-semibold text-coffee">
                       {selectedProduct ? "Editar producto" : "Nuevo producto"}
                     </p>
-                    <h2 className="mt-1 text-2xl font-bold text-text-dark">
+                    <h2 className="mt-1 text-2xl font-black text-text-dark">
                       {selectedProduct
                         ? "Actualiza los datos del producto"
                         : "Agrega un producto al catálogo"}
@@ -301,10 +301,10 @@ export default function AdminDashboardClient() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-3xl border border-border bg-white shadow-soft">
-                <div className="flex flex-col gap-2 border-b border-border p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="overflow-hidden rounded-[2rem] border border-border bg-white/95 shadow-soft">
+                <div className="flex flex-col gap-2 border-b border-border bg-cream/50 p-5 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h2 className="text-xl font-bold text-text-dark">
+                    <h2 className="text-xl font-black text-text-dark">
                       Productos del catálogo
                     </h2>
                     <p className="text-sm text-text-secondary">
@@ -317,7 +317,7 @@ export default function AdminDashboardClient() {
                   <div className="p-8 text-text-secondary">Cargando...</div>
                 ) : products.length === 0 ? (
                   <div className="p-10 text-center">
-                    <p className="text-lg font-bold text-text-dark">
+                    <p className="text-lg font-black text-text-dark">
                       Todavía no hay productos
                     </p>
                     <p className="mt-2 text-sm text-text-secondary">
@@ -326,7 +326,7 @@ export default function AdminDashboardClient() {
                     </p>
                     <button
                       onClick={handleOpenNewProduct}
-                      className="mt-5 rounded-2xl bg-coffee px-5 py-3 text-sm font-bold text-white transition hover:bg-coffee-dark"
+                      className="mt-5 rounded-full bg-coffee px-5 py-3 text-sm font-bold text-white shadow-lg shadow-coffee/20 transition hover:bg-coffee-dark"
                     >
                       + Crear producto
                     </button>
@@ -334,7 +334,7 @@ export default function AdminDashboardClient() {
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[850px]">
-                      <thead className="bg-cream">
+                      <thead className="bg-cream/80">
                         <tr>
                           <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-text-secondary">
                             Producto
@@ -358,7 +358,7 @@ export default function AdminDashboardClient() {
                         {products.map((product) => (
                           <tr
                             key={product.id}
-                            className="transition hover:bg-cream/60"
+                            className="transition hover:bg-cream/50"
                           >
                             <td className="px-6 py-5">
                               <div>
@@ -389,7 +389,7 @@ export default function AdminDashboardClient() {
 
                             <td className="px-6 py-5">
                               <span
-                                className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${
+                                className={`inline-flex rounded-full px-3 py-1.5 text-xs font-bold shadow-sm ${
                                   product.available
                                     ? "bg-green-100 text-green-700"
                                     : "bg-red-100 text-red-700"
@@ -405,7 +405,7 @@ export default function AdminDashboardClient() {
                               <div className="flex justify-end gap-2">
                                 <button
                                   onClick={() => handleEditProduct(product)}
-                                  className="rounded-xl border border-border bg-white px-3 py-2 text-sm font-semibold text-coffee transition hover:bg-cream"
+                                  className="rounded-full border border-border bg-white px-3 py-2 text-sm font-bold text-coffee transition hover:bg-cream"
                                 >
                                   Editar
                                 </button>
@@ -414,7 +414,7 @@ export default function AdminDashboardClient() {
                                   onClick={() =>
                                     handleDeleteProduct(product.id)
                                   }
-                                  className="rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-100"
+                                  className="rounded-full bg-red-50 px-3 py-2 text-sm font-bold text-red-600 transition hover:bg-red-100"
                                 >
                                   Eliminar
                                 </button>
@@ -432,9 +432,9 @@ export default function AdminDashboardClient() {
         )}
 
         {tab === "ordenes" && (
-          <section className="rounded-3xl border border-border bg-white shadow-soft">
-            <div className="border-b border-border p-5">
-              <h2 className="text-xl font-bold text-text-dark">
+          <section className="overflow-hidden rounded-[2rem] border border-border bg-white/95 shadow-soft">
+            <div className="border-b border-border bg-cream/50 p-5">
+              <h2 className="text-xl font-black text-text-dark">
                 Órdenes recibidas
               </h2>
               <p className="text-sm text-text-secondary">
@@ -446,7 +446,7 @@ export default function AdminDashboardClient() {
               <div className="p-8 text-text-secondary">Cargando...</div>
             ) : orders.length === 0 ? (
               <div className="p-10 text-center">
-                <p className="text-lg font-bold text-text-dark">
+                <p className="text-lg font-black text-text-dark">
                   No hay órdenes todavía
                 </p>
                 <p className="mt-2 text-sm text-text-secondary">
@@ -456,7 +456,7 @@ export default function AdminDashboardClient() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[850px]">
-                  <thead className="bg-cream">
+                  <thead className="bg-cream/80">
                     <tr>
                       <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-text-secondary">
                         Orden
@@ -478,7 +478,7 @@ export default function AdminDashboardClient() {
 
                   <tbody className="divide-y divide-border">
                     {orders.map((order) => (
-                      <tr key={order.id} className="transition hover:bg-cream/60">
+                      <tr key={order.id} className="transition hover:bg-cream/50">
                         <td className="px-6 py-5 font-mono text-sm text-text-dark">
                           #{order.id.slice(0, 8)}
                         </td>
@@ -498,7 +498,7 @@ export default function AdminDashboardClient() {
 
                         <td className="px-6 py-5">
                           <span
-                            className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${
+                            className={`inline-flex rounded-full px-3 py-1.5 text-xs font-bold shadow-sm ${
                               order.status === "pagado"
                                 ? "bg-green-100 text-green-700"
                                 : order.status === "pendiente"
