@@ -69,13 +69,13 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
         onClick={onClose}
       />
 
-      <aside className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col overflow-hidden bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-border bg-white p-5">
+      <aside className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col overflow-hidden bg-white shadow-[0_24px_80px_rgba(24,37,29,0.22)] sm:max-w-lg">
+        <div className="flex items-center justify-between border-b border-border bg-cream/50 p-5">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-coffee">
               Carrito
             </p>
-            <h2 className="text-xl font-bold text-text-dark">Tu compra</h2>
+            <h2 className="text-xl font-black text-text-dark">Tu compra</h2>
           </div>
 
           <button
@@ -83,7 +83,7 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
             onClick={onClose}
             aria-label="Cerrar carrito"
             title="Cerrar carrito"
-            className="rounded-full p-2 text-text-dark transition hover:bg-cream"
+            className="rounded-full border border-border bg-white p-2 text-text-dark shadow-sm transition hover:bg-cream"
           >
             <svg
               className="h-6 w-6"
@@ -104,20 +104,20 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
 
         {items.length > 0 ? (
           <>
-            <div className="flex-1 space-y-4 overflow-y-auto p-5">
+            <div className="flex-1 space-y-4 overflow-y-auto bg-cream/30 p-5">
               {items.map((item) => (
                 <div
                   key={item.product_id}
-                  className="grid grid-cols-[80px_1fr_auto] gap-4 rounded-2xl border border-border bg-cream/50 p-3"
+                  className="grid grid-cols-[88px_1fr_auto] gap-4 rounded-[1.35rem] border border-border bg-white p-3 shadow-sm"
                 >
-                  <div className="relative h-20 w-20 overflow-hidden rounded-xl bg-white">
+                  <div className="relative h-[88px] w-[88px] overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-cream via-white to-coffee/10">
                     {item.image_url ? (
                       <Image
                         src={item.image_url}
                         alt={item.name}
                         fill
                         unoptimized
-                        className="object-cover"
+                        className="object-contain p-2 drop-shadow-[0_10px_14px_rgba(93,58,31,0.12)]"
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center text-2xl">
@@ -130,27 +130,27 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
                     <Link
                       href={`/productos/${item.product_id}`}
                       onClick={onClose}
-                      className="line-clamp-2 text-sm font-bold text-text-dark transition hover:text-coffee"
+                    className="line-clamp-2 text-sm font-black leading-snug text-text-dark transition hover:text-coffee"
                     >
                       {item.name}
                     </Link>
 
-                    <p className="mt-1 font-bold text-coffee">
+                    <p className="mt-2 font-black text-coffee">
                       {formatCurrency(item.price)}
                     </p>
 
-                    <div className="mt-3 flex w-fit items-center overflow-hidden rounded-full border border-border bg-white">
+                    <div className="mt-3 flex w-fit items-center overflow-hidden rounded-full border border-border bg-cream/70 shadow-inner">
                       <button
                         type="button"
                         onClick={() => handleDecrease(item.product_id)}
                         aria-label={`Disminuir cantidad de ${item.name}`}
                         title={`Disminuir cantidad de ${item.name}`}
-                        className="flex h-8 w-8 items-center justify-center font-bold text-coffee transition hover:bg-cream"
+                        className="flex h-8 w-8 items-center justify-center font-black text-coffee transition hover:bg-white"
                       >
                         −
                       </button>
 
-                      <span className="w-8 text-center text-sm font-semibold text-text-dark">
+                      <span className="w-9 bg-white text-center text-sm font-black text-text-dark">
                         {item.quantity}
                       </span>
 
@@ -159,7 +159,7 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
                         onClick={() => handleIncrease(item.product_id)}
                         aria-label={`Aumentar cantidad de ${item.name}`}
                         title={`Aumentar cantidad de ${item.name}`}
-                        className="flex h-8 w-8 items-center justify-center font-bold text-coffee transition hover:bg-cream"
+                        className="flex h-8 w-8 items-center justify-center font-black text-coffee transition hover:bg-white"
                       >
                         +
                       </button>
@@ -171,7 +171,7 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
                     onClick={() => handleRemove(item.product_id)}
                     aria-label={`Eliminar ${item.name} del carrito`}
                     title={`Eliminar ${item.name}`}
-                    className="h-fit rounded-full p-2 text-red-600 transition hover:bg-red-50"
+                    className="h-fit rounded-full border border-red-100 bg-red-50 p-2 text-red-600 transition hover:bg-red-100"
                   >
                     <svg
                       className="h-5 w-5"
@@ -193,7 +193,7 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
             </div>
 
             <div className="border-t border-border bg-white p-5">
-              <div className="space-y-3">
+              <div className="space-y-3 rounded-3xl bg-cream/60 p-4">
                 <div className="flex justify-between text-text-secondary">
                   <span>Subtotal:</span>
                   <span>{formatCurrency(totals.subtotal)}</span>
@@ -217,7 +217,7 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
               <Link
                 href="/pago/checkout"
                 onClick={onClose}
-                className="mt-5 block w-full rounded-full bg-coffee px-6 py-3 text-center font-bold text-white shadow-lg shadow-coffee/20 transition hover:bg-coffee-dark"
+                className="mt-5 block w-full rounded-full bg-coffee px-6 py-3.5 text-center font-black text-white shadow-[0_14px_30px_rgba(93,58,31,0.22)] transition hover:bg-coffee-dark"
               >
                 Proceder al pago
               </Link>
@@ -225,7 +225,7 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
               <button
                 type="button"
                 onClick={handleClear}
-                className="mt-3 w-full rounded-full bg-red-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-red-700"
+                className="mt-3 w-full rounded-full border border-red-200 bg-red-50 px-6 py-3 text-sm font-bold text-red-600 transition hover:bg-red-100"
               >
                 Vaciar carrito
               </button>
@@ -233,7 +233,7 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
               <Link
                 href="/#productos"
                 onClick={onClose}
-                className="mt-3 block w-full rounded-full border border-coffee px-6 py-3 text-center font-bold text-coffee transition hover:bg-cream"
+                className="mt-3 block w-full rounded-full border border-coffee/40 bg-white px-6 py-3 text-center font-bold text-coffee transition hover:bg-cream"
               >
                 Continuar comprando
               </Link>
@@ -242,11 +242,11 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
         ) : (
           <div className="flex flex-1 items-center justify-center p-6">
             <div className="text-center">
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-coffee/10 text-4xl">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-coffee/10 text-4xl shadow-inner">
                 🧺
               </div>
 
-              <h3 className="mt-6 text-2xl font-bold text-text-dark">
+              <h3 className="mt-6 text-2xl font-black text-text-dark">
                 Carrito vacío
               </h3>
 
@@ -257,7 +257,7 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
               <Link
                 href="/#productos"
                 onClick={onClose}
-                className="mt-7 inline-flex rounded-full bg-coffee px-7 py-3 font-bold text-white transition hover:bg-coffee-dark"
+                className="mt-7 inline-flex rounded-full bg-coffee px-7 py-3 font-black text-white shadow-[0_14px_30px_rgba(93,58,31,0.18)] transition hover:bg-coffee-dark"
               >
                 Ver productos
               </Link>

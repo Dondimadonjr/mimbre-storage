@@ -8,7 +8,7 @@ import { formatCurrency } from '@/lib/format'
 import { addToCart } from '@/lib/cart'
 import type { Product } from '@/types/product'
 import SectionTitle from '@/components/SectionTitle'
-import ProductsGrid from '@/components/ProductsGrid'
+import ProductCard from '@/components/ProductCard'
 
 export default function ProductDetail({
   params,
@@ -17,6 +17,7 @@ export default function ProductDetail({
 }) {
   const { id } = use(params);
   const [product, setProduct] = useState<Product | null>(null)
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
   const [addedToCart, setAddedToCart] = useState(false)
@@ -35,7 +36,30 @@ export default function ProductDetail({
           .single()
 
         if (error) throw error
-        setProduct(data)
+
+        const loadedProduct = data as Product
+        setProduct(loadedProduct)
+
+        if (!loadedProduct.category) {
+          setRelatedProducts([])
+          return
+        }
+
+        const { data: relatedData, error: relatedError } = await supabase
+          .from('products')
+          .select('*')
+          .eq('available', true)
+          .eq('category', loadedProduct.category)
+          .neq('id', id)
+          .order('created_at', { ascending: false })
+          .limit(3)
+
+        if (relatedError) {
+          console.error('Error loading related products:', relatedError)
+          setRelatedProducts([])
+        } else {
+          setRelatedProducts((relatedData as Product[]) || [])
+        }
       } catch (err) {
         console.error('Error loading product:', err)
       } finally {
@@ -106,13 +130,13 @@ export default function ProductDetail({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Imagen */}
-          <div className="relative h-96 md:h-full min-h-96 bg-cream rounded-lg overflow-hidden">
-            {product.image_url ? (
+            <div className="relative flex min-h-90 items-center justify-center overflow-hidden rounded-3xl border border-border bg-white p-8 shadow-soft lg:min-h-130">            {product.image_url ? (
               <Image
                 src={product.image_url}
                 alt={product.name}
                 fill
-                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-contain p-8 drop-shadow-[0_18px_28px_rgba(93,58,31,0.16)] sm:p-12"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
@@ -235,7 +259,7 @@ export default function ProductDetail({
             <div className="bg-cream p-6 rounded-lg space-y-3">
               <div className="flex gap-3">
                 <svg
-                  className="w-5 h-5 text-coffee flex-shrink-0"
+                  className="w-5 h-5 text-coffee shrink-0"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -250,7 +274,7 @@ export default function ProductDetail({
               </div>
               <div className="flex gap-3">
                 <svg
-                  className="w-5 h-5 text-coffee flex-shrink-0"
+                  className="w-5 h-5 text-coffee shrink-0"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -268,23 +292,28 @@ export default function ProductDetail({
         </div>
       </div>
 
-      {/* Productos relacionados */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle
-            title="Productos Relacionados"
-            subtitle={`Otros artículos de ${product.category || 'nuestra tienda'}`}
-          />
-          {product.category && (
-            <div className="flex gap-6 max-w-md mb-8">
-              <div className="text-sm text-text-secondary">
-                Categoría: <span className="font-medium">{product.category}</span>
+      {relatedProducts.length > 0 && (
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <SectionTitle
+              title="Productos Relacionados"
+              subtitle={`Otros artículos de ${product.category || 'nuestra tienda'}`}
+            />
+            {product.category && (
+              <div className="flex gap-6 max-w-md mb-8">
+                <div className="text-sm text-text-secondary">
+                  Categoría: <span className="font-medium">{product.category}</span>
+                </div>
               </div>
+            )}
+            <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 xl:grid-cols-3">
+              {relatedProducts.map((relatedProduct) => (
+                <ProductCard key={relatedProduct.id} product={relatedProduct} />
+              ))}
             </div>
-          )}
-          <ProductsGrid featured={false} />
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
     </>
   )
 }
