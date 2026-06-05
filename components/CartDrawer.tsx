@@ -116,6 +116,7 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
                         src={item.image_url}
                         alt={item.name}
                         fill
+                        sizes="88px"
                         unoptimized
                         className="object-contain p-2 drop-shadow-[0_10px_14px_rgba(93,58,31,0.12)]"
                       />
