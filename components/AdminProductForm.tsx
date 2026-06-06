@@ -175,170 +175,290 @@ export default function AdminProductForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-[2rem] border border-border bg-white/95 p-5 shadow-sm sm:p-6"
+      className="overflow-hidden rounded-[2rem] border border-border bg-white/95 shadow-soft"
     >
-      {error && (
-        <div className="rounded-2xl border border-red-200 bg-red-50/90 p-4 text-sm font-semibold text-red-700 shadow-sm">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="rounded-2xl border border-green-200 bg-green-50/90 p-4 text-sm font-semibold text-green-700 shadow-sm">
-          Producto guardado exitosamente.
-        </div>
-      )}
-
-      <div>
-        <label className="mb-2 block text-sm font-medium text-text-dark">
-          Nombre *
-        </label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="w-full rounded-2xl border border-border bg-white px-4 py-3.5 shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
-          placeholder="Ej: Canasto tejido grande"
-        />
-      </div>
-
-      <div>
-        <label className="mb-2 block text-sm font-medium text-text-dark">
-          Descripción
-        </label>
-        <textarea
-          name="description"
-          value={formData.description || ""}
-          onChange={handleChange}
-          rows={4}
-          className="w-full rounded-2xl border border-border bg-white px-4 py-3.5 shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
-          placeholder="Descripción del producto..."
-        />
-      </div>
-
-      <div className="grid gap-4 rounded-3xl bg-cream/50 p-4 md:grid-cols-2">
-        <div>
-          <label className="mb-2 block text-sm font-medium text-text-dark">
-            Precio CLP *
-          </label>
-          <input
-            type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            required
-            min={0}
-            className="w-full rounded-2xl border border-border bg-white px-4 py-3.5 shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
-            placeholder="0"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-medium text-text-dark">
-            Stock
-          </label>
-          <input
-            type="number"
-            name="stock"
-            value={formData.stock}
-            onChange={handleChange}
-            min={0}
-            className="w-full rounded-2xl border border-border bg-white px-4 py-3.5 shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
-            placeholder="0"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label className="mb-2 block text-sm font-medium text-text-dark">
-          Categoría
-        </label>
-        <select
-          title="categoría del producto"
-          name="category"
-          value={formData.category || ""}
-          onChange={handleChange}
-          className="w-full rounded-2xl border border-border bg-white px-4 py-3.5 shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
-        >
-          <option value="">Seleccionar categoría...</option>
-          <option value="Canastos">Canastos</option>
-          <option value="Bandejas">Bandejas</option>
-          <option value="Decoración">Decoración</option>
-          <option value="Organizadores">Organizadores</option>
-          <option value="Iluminación">Iluminación</option>
-          <option value="Accesorios">Accesorios</option>
-          <option value="Otros">Otros</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="mb-2 block text-sm font-medium text-text-dark">
-          Subir imagen principal
-        </label>
-        <input
-          title="archivo"
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          onChange={handleImageChange}
-          className="w-full rounded-2xl border border-dashed border-border bg-cream/70 px-4 py-3.5 text-sm shadow-sm"
-        />
-        <p className="mt-2 text-xs text-text-secondary">
-          Formatos permitidos: JPG, PNG, WEBP o GIF. Máximo 5MB.
+      <div className="border-b border-border bg-cream/50 px-5 py-4 sm:px-6">
+        <p className="text-xs font-black uppercase tracking-[0.22em] text-coffee">
+          Producto
+        </p>
+        <h3 className="mt-1 text-xl font-black text-text-dark">
+          {product ? "Editar producto" : "Crear producto"}
+        </h3>
+        <p className="mt-1 text-sm leading-relaxed text-text-secondary">
+          Completa la información comercial, visual y de estado del producto.
         </p>
       </div>
 
-      {imagePreview && (
-        <div className="overflow-hidden rounded-3xl border border-border bg-cream shadow-sm">
-          <Image
-            src={imagePreview}
-            alt="Vista previa"
-            width={900}
-            height={420}
-            className="h-64 w-full object-cover"
-            unoptimized={imagePreview.startsWith("blob:")}
-          />
+      <div className="space-y-5 p-5 sm:p-6">
+        {error && (
+          <div className="rounded-2xl border border-red-200 bg-red-50/90 p-4 text-sm font-semibold text-red-700 shadow-sm">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="rounded-2xl border border-green-200 bg-green-50/90 p-4 text-sm font-semibold text-green-700 shadow-sm">
+            Producto guardado exitosamente.
+          </div>
+        )}
+
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="space-y-5">
+            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+              <SectionHeader
+                title="Información básica"
+                description="Nombre y descripción visibles en la tienda."
+              />
+
+              <div className="mt-4 space-y-4">
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-text-dark">
+                    Nombre *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+                    placeholder="Ej: Canasto tejido grande"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-text-dark">
+                    Descripción
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description || ""}
+                    onChange={handleChange}
+                    rows={4}
+                    className="w-full resize-none rounded-2xl border border-border bg-white px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+                    placeholder="Descripción del producto..."
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+              <SectionHeader
+                title="Precio y stock"
+                description="Valores usados por el catálogo y el checkout."
+              />
+
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-text-dark">
+                    Precio CLP *
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    required
+                    min={0}
+                    className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+                    placeholder="0"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-text-dark">
+                    Stock
+                  </label>
+                  <input
+                    type="number"
+                    name="stock"
+                    value={formData.stock}
+                    onChange={handleChange}
+                    min={0}
+                    className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+              <SectionHeader
+                title="Categoría"
+                description="Agrupa el producto dentro del catálogo."
+              />
+
+              <div className="mt-4">
+                <label className="mb-1.5 block text-sm font-bold text-text-dark">
+                  Categoría
+                </label>
+                <select
+                  title="categoría del producto"
+                  name="category"
+                  value={formData.category || ""}
+                  onChange={handleChange}
+                  className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+                >
+                  <option value="">Seleccionar categoría...</option>
+                  <option value="Canastos">Canastos</option>
+                  <option value="Bandejas">Bandejas</option>
+                  <option value="Decoración">Decoración</option>
+                  <option value="Organizadores">Organizadores</option>
+                  <option value="Iluminación">Iluminación</option>
+                  <option value="Accesorios">Accesorios</option>
+                  <option value="Otros">Otros</option>
+                </select>
+              </div>
+            </section>
+          </div>
+
+          <aside className="space-y-5">
+            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+              <SectionHeader
+                title="Imagen principal"
+                description="Vista previa y carga de imagen del producto."
+              />
+
+              <div className="mt-4">
+                {imagePreview ? (
+                  <div className="relative overflow-hidden rounded-[1.35rem] border border-border bg-gradient-to-br from-cream via-white to-coffee/10">
+                    <Image
+                      src={imagePreview}
+                      alt="Vista previa"
+                      width={900}
+                      height={420}
+                      className="h-56 w-full object-contain p-4"
+                      unoptimized={imagePreview.startsWith("blob:")}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex h-56 items-center justify-center rounded-[1.35rem] border border-dashed border-border bg-cream/70 text-sm font-semibold text-text-secondary">
+                    Sin imagen seleccionada
+                  </div>
+                )}
+
+                <label className="mt-4 block cursor-pointer rounded-2xl border border-dashed border-coffee/30 bg-cream/70 px-4 py-4 text-center transition hover:border-coffee hover:bg-cream">
+                  <input
+                    title="archivo"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    onChange={handleImageChange}
+                    className="sr-only"
+                  />
+                  <span className="text-sm font-black text-coffee">
+                    Seleccionar imagen
+                  </span>
+                  <span className="mt-1 block text-xs text-text-secondary">
+                    JPG, PNG, WEBP o GIF. Máximo 5MB.
+                  </span>
+                </label>
+              </div>
+            </section>
+
+            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+              <SectionHeader
+                title="Estado del producto"
+                description="Controla visibilidad y destaque en tienda."
+              />
+
+              <div className="mt-4 space-y-3">
+                <ToggleField
+                  name="available"
+                  checked={formData.available}
+                  onChange={handleChange}
+                  title="Disponible"
+                  description="El producto puede mostrarse y venderse."
+                />
+
+                <ToggleField
+                  name="featured"
+                  checked={formData.featured}
+                  onChange={handleChange}
+                  title="Destacado"
+                  description="Marca el producto como destacado."
+                />
+              </div>
+            </section>
+          </aside>
         </div>
-      )}
 
-      <div className="grid gap-3 rounded-3xl bg-cream/70 p-4 md:grid-cols-2">
-        <label className="flex items-center gap-3 text-sm font-medium text-text-dark">
-          <input
-            type="checkbox"
-            name="available"
-            checked={formData.available}
-            onChange={handleChange}
-            className="h-4 w-4 rounded accent-coffee"
-          />
-          Disponible
-        </label>
+        <div className="flex flex-col gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-text-secondary">
+            Los cambios se reflejarán en el catálogo al guardar.
+          </p>
 
-        <label className="flex items-center gap-3 text-sm font-medium text-text-dark">
-          <input
-            type="checkbox"
-            name="featured"
-            checked={formData.featured}
-            onChange={handleChange}
-            className="h-4 w-4 rounded accent-coffee"
-          />
-          Destacado
-        </label>
+          <button
+            type="submit"
+            disabled={loading || uploadingImage}
+            className="w-full rounded-full bg-coffee px-6 py-3.5 font-black text-white shadow-lg shadow-coffee/20 transition hover:-translate-y-0.5 hover:bg-coffee-dark disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 sm:w-auto"
+          >
+            {loading || uploadingImage
+              ? uploadingImage
+                ? "Subiendo imagen..."
+                : "Guardando..."
+              : product
+                ? "Actualizar producto"
+                : "Crear producto"}
+          </button>
+        </div>
       </div>
-
-      <button
-        type="submit"
-        disabled={loading || uploadingImage}
-        className="w-full rounded-full bg-coffee px-6 py-4 font-bold text-white shadow-lg shadow-coffee/20 transition hover:-translate-y-0.5 hover:bg-coffee-dark disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
-      >
-        {loading || uploadingImage
-          ? uploadingImage
-            ? "Subiendo imagen..."
-            : "Guardando..."
-          : product
-            ? "Actualizar producto"
-            : "Crear producto"}
-      </button>
     </form>
+  );
+}
+
+function SectionHeader({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
+  return (
+    <div>
+      <h4 className="text-sm font-black uppercase tracking-wide text-text-dark">
+        {title}
+      </h4>
+      <p className="mt-1 text-xs leading-relaxed text-text-secondary">
+        {description}
+      </p>
+    </div>
+  );
+}
+
+function ToggleField({
+  name,
+  checked,
+  onChange,
+  title,
+  description,
+}: {
+  name: "available" | "featured";
+  checked: boolean;
+  onChange: (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => void;
+  title: string;
+  description: string;
+}) {
+  return (
+    <label className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-border bg-cream/50 p-4 transition hover:bg-cream">
+      <span>
+        <span className="block text-sm font-black text-text-dark">{title}</span>
+        <span className="mt-1 block text-xs leading-relaxed text-text-secondary">
+          {description}
+        </span>
+      </span>
+
+      <input
+        type="checkbox"
+        name={name}
+        checked={checked}
+        onChange={onChange}
+        className="peer sr-only"
+      />
+      <span className="flex h-7 w-12 shrink-0 items-center rounded-full bg-border p-1 transition peer-checked:justify-end peer-checked:bg-coffee">
+        <span className="h-5 w-5 rounded-full bg-white shadow-sm" />
+      </span>
+    </label>
   );
 }
