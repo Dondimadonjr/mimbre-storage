@@ -991,7 +991,7 @@ function OrderDetailPanel({
         className="absolute inset-0 h-full w-full cursor-default"
       />
 
-      <aside className="relative ml-auto flex h-full w-full max-w-3xl flex-col overflow-hidden bg-white shadow-2xl sm:rounded-[2rem]">
+      <aside className="relative ml-auto flex h-full w-full max-w-3xl flex-col overflow-hidden bg-white shadow-2xl sm:rounded-4xl">
         <div className="border-b border-border bg-cream/60 p-5 sm:p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
@@ -1028,7 +1028,7 @@ function OrderDetailPanel({
 
         <div className="flex-1 overflow-y-auto p-5 sm:p-6">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
-            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+            <section className="rounded-3xl border border-border bg-white p-4 shadow-sm">
               <h3 className="text-sm font-black uppercase tracking-wide text-text-dark">
                 Cliente
               </h3>
@@ -1046,7 +1046,7 @@ function OrderDetailPanel({
               </dl>
             </section>
 
-            <section className="rounded-[1.5rem] border border-border bg-cream/60 p-4 shadow-sm">
+            <section className="rounded-3xl border border-border bg-cream/60 p-4 shadow-sm">
               <h3 className="text-sm font-black uppercase tracking-wide text-text-dark">
                 Resumen
               </h3>
@@ -1074,7 +1074,7 @@ function OrderDetailPanel({
             </section>
           </div>
 
-          <section className="mt-5 rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+          <section className="mt-5 rounded-3xl border border-border bg-white p-4 shadow-sm">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="text-sm font-black uppercase tracking-wide text-text-dark">
@@ -1188,7 +1188,7 @@ function DetailField({
       <dt className="text-xs font-bold uppercase tracking-wide text-text-secondary">
         {label}
       </dt>
-      <dd className="mt-1 break-words font-bold text-text-dark">
+      <dd className="mt-1 wrap-break-words font-bold text-text-dark">
         {value || "No informado"}
       </dd>
     </div>
