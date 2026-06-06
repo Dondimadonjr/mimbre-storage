@@ -53,6 +53,49 @@ function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-CL");
 }
 
+function normalizePhoneForWhatsApp(phone: string) {
+  return phone.replace(/[\s+\-()]/g, "");
+}
+
+function buildOrderAddress(order: Order) {
+  return [order.customer_address, order.customer_commune, order.customer_region]
+    .filter(Boolean)
+    .join(", ");
+}
+
+function buildOrderSummary(order: Order, items: OrderItem[]) {
+  const address = buildOrderAddress(order);
+  const productsText =
+    items.length > 0
+      ? items
+          .map(
+            (item) =>
+              `* ${item.product_name} x ${item.quantity} - ${formatCurrency(
+                item.subtotal
+              )}`
+          )
+          .join("\n")
+      : "* No hay productos asociados a esta orden.";
+
+  return [
+    `Orden #${order.id.slice(0, 8)}`,
+    `Estado: ${order.status}`,
+    `Cliente: ${order.customer_name}`,
+    `Email: ${order.customer_email}`,
+    order.customer_phone ? `Telefono: ${order.customer_phone}` : null,
+    address ? `Direccion: ${address}` : null,
+    "Productos:",
+    productsText,
+    `Total: ${formatCurrency(order.total)}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function buildOrderMessage(order: Order, items: OrderItem[]) {
+  return encodeURIComponent(buildOrderSummary(order, items));
+}
+
 export default function AdminDashboardClient() {
   const router = useRouter();
 
@@ -972,10 +1015,64 @@ function OrderDetailPanel({
   loadingItems: boolean;
   onClose: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
   const hasAddress =
     Boolean(order.customer_address) ||
     Boolean(order.customer_commune) ||
     Boolean(order.customer_region);
+  const whatsappPhone = order.customer_phone
+    ? normalizePhoneForWhatsApp(order.customer_phone)
+    : "";
+  const canUseWhatsApp = Boolean(whatsappPhone);
+  const canUseEmail = Boolean(order.customer_email);
+
+  const handleCopySummary = async () => {
+    const summary = buildOrderSummary(order, items);
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(summary);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = summary;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch (error) {
+      console.error("Error copying order summary:", error);
+    }
+  };
+
+  const handleOpenWhatsApp = () => {
+    if (!canUseWhatsApp) return;
+
+    window.open(
+      `https://wa.me/${whatsappPhone}?text=${buildOrderMessage(order, items)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
+  const handleOpenEmail = () => {
+    if (!canUseEmail) return;
+
+    const subject = encodeURIComponent(`Orden #${order.id.slice(0, 8)}`);
+    const body = buildOrderMessage(order, items);
+
+    window.open(
+      `mailto:${order.customer_email}?subject=${subject}&body=${body}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
 
   return (
     <div
@@ -1073,6 +1170,55 @@ function OrderDetailPanel({
               </div>
             </section>
           </div>
+
+          <section className="mt-5 rounded-3xl border border-border bg-white p-4 shadow-sm">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h3 className="text-sm font-black uppercase tracking-wide text-text-dark">
+                  Acciones rápidas
+                </h3>
+                <p className="text-sm text-text-secondary">
+                  Copia el resumen o contacta al cliente sin salir del panel.
+                </p>
+              </div>
+
+              {copied && (
+                <span className="rounded-full bg-green-100 px-3 py-1.5 text-xs font-black text-green-700 ring-1 ring-green-200">
+                  Copiado
+                </span>
+              )}
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <button
+                type="button"
+                onClick={() => void handleCopySummary()}
+                className="rounded-full bg-coffee px-4 py-3 text-sm font-black text-white shadow-lg shadow-coffee/20 transition hover:-translate-y-0.5 hover:bg-coffee-dark"
+              >
+                Copiar resumen
+              </button>
+
+              {canUseWhatsApp && (
+                <button
+                  type="button"
+                  onClick={handleOpenWhatsApp}
+                  className="rounded-full border border-border bg-white px-4 py-3 text-sm font-black text-coffee transition hover:bg-cream"
+                >
+                  WhatsApp
+                </button>
+              )}
+
+              {canUseEmail && (
+                <button
+                  type="button"
+                  onClick={handleOpenEmail}
+                  className="rounded-full border border-border bg-white px-4 py-3 text-sm font-black text-coffee transition hover:bg-cream"
+                >
+                  Email
+                </button>
+              )}
+            </div>
+          </section>
 
           <section className="mt-5 rounded-3xl border border-border bg-white p-4 shadow-sm">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
