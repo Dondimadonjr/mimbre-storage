@@ -93,154 +93,158 @@ export default function ProductsGrid({ featured = false }: ProductsGridProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-full space-y-6">
-          <div className="mx-auto h-8 w-40 animate-pulse rounded-full bg-coffee/20" />
+      <section
+        id="productos"
+        className="relative overflow-hidden bg-cream px-4 py-14 sm:px-6 lg:px-8"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-8 h-28 animate-pulse rounded-[2rem] bg-white/75" />
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((item) => (
               <div
                 key={item}
-                className="h-80 animate-pulse rounded-3xl bg-coffee/10"
+                className="h-[460px] animate-pulse rounded-[28px] border border-border bg-white/80 shadow-sm"
               />
             ))}
           </div>
         </div>
-      </div>
+      </section>
     );
   }
 
   if (error) {
     return (
-      <div className="rounded-3xl border border-red-200 bg-red-50 px-6 py-10 text-center">
-        <p className="font-semibold text-red-700">Error al cargar productos</p>
-        <p className="mt-2 text-sm text-red-600">{error}</p>
-      </div>
+      <section id="productos" className="bg-cream px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl rounded-[2rem] border border-red-200 bg-red-50 px-6 py-10 text-center shadow-sm">
+          <p className="font-black text-red-700">Error al cargar productos</p>
+          <p className="mt-2 text-sm text-red-600">{error}</p>
+        </div>
+      </section>
     );
   }
 
   if (products.length === 0) {
     return (
-      <div className="rounded-3xl border border-border bg-white px-6 py-16 text-center">
-        <p className="font-medium text-text-dark">No hay productos disponibles</p>
-        <p className="mt-2 text-sm text-text-secondary">
-          Agrega productos desde el panel administrador.
-        </p>
-      </div>
+      <section id="productos" className="bg-cream px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl rounded-[2rem] border border-border bg-white px-6 py-16 text-center shadow-soft">
+          <p className="font-black text-text-dark">No hay productos disponibles</p>
+          <p className="mt-2 text-sm text-text-secondary">
+            Agrega productos desde el panel administrador.
+          </p>
+        </div>
+      </section>
     );
   }
 
   return (
-  <section
-  id="productos"
-  className="relative overflow-hidden bg-[#faf6f0] px-5 py-8 sm:px-8 lg:px-10"
->
-  <div className="pointer-events-none absolute left-0 top-0 h-80 w-80 rounded-full bg-[#c89b6b]/10 blur-3xl" />
-  <div className="pointer-events-none absolute right-0 top-40 h-96 w-96 rounded-full bg-[#8a5a39]/10 blur-3xl" />
+    <section
+      id="productos"
+      className="relative overflow-hidden bg-cream px-4 py-14 sm:px-6 lg:px-8 lg:py-16"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_8%_10%,rgba(139,94,60,0.08),transparent_28%),radial-gradient(circle_at_92%_24%,rgba(216,180,138,0.18),transparent_30%)]" />
 
-  <div className="relative mx-auto max-w-7xl space-y-6">
-    {/* Encabezado catálogo */}
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd2] bg-white/70 px-4 py-2 shadow-sm backdrop-blur">
-        <span className="h-2 w-2 rounded-full bg-[#8a5a39]" />
-        <p className="text-xs font-black uppercase tracking-[0.22em] text-[#a87555]">
-            Catálogo artesanal
-        </p>
-        </div>
+      <div className="relative mx-auto max-w-7xl">
+        <div className="mb-8 rounded-[2rem] border border-border bg-white/82 p-5 shadow-soft backdrop-blur sm:p-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-coffee/15 bg-cream px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-coffee">
+                <span className="h-2 w-2 rounded-full bg-coffee" />
+                Catálogo artesanal
+              </span>
 
-        <h2 className="mt-4 max-w-3xl text-3xl font-black tracking-tight text-[#17241e] sm:text-[2.35rem]">
-        Productos de mimbre hechos a mano
-        </h2>
+              <h2 className="mt-4 max-w-3xl text-3xl font-black leading-tight text-text-dark sm:text-4xl">
+                Productos de mimbre hechos a mano
+              </h2>
 
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-[#65736a] sm:text-[15px]">
-        Piezas artesanales seleccionadas para decorar, organizar y entregar calidez natural a tu hogar.
-        </p>
-        </div>
-
-        <div className="w-fit rounded-2xl border border-[#eadfd2] bg-white/80 px-4 py-3 text-sm font-bold text-[#6f5b4e] shadow-sm backdrop-blur">
-        <span className="text-[#8a5a39]">{filteredProducts.length}</span> de{" "}
-        <span className="text-[#8a5a39]">{products.length}</span> productos
-        </div>
-    </div>
-
-    {/* Filtros */}
-    {!featured && (
-       <div className="rounded-[1.75rem] border border-[#eadfd2] bg-white/80 p-4 shadow-[0_14px_35px_rgba(70,45,25,0.06)] backdrop-blur">
-        <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
-            <input
-            type="text"
-            placeholder="Buscar productos..."
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            className="w-full rounded-full border border-[#eadfd2] bg-white px-5 py-2.5 text-[#17241e] outline-none transition focus:border-[#8a5a39] focus:ring-4 focus:ring-[#8a5a39]/10"
-            />
-
-            <label htmlFor="sort-products" className="sr-only">
-            Ordenar productos
-            </label>
-
-            <select
-            id="sort-products"
-            value={sortBy}
-            onChange={(event) => setSortBy(event.target.value as SortBy)}
-            className="rounded-full border border-[#eadfd2] bg-white px-5 py-2.5 text-[#17241e] outline-none transition focus:border-[#8a5a39] focus:ring-4 focus:ring-[#8a5a39]/10"
-            >
-            <option value="name">Ordenar por nombre</option>
-            <option value="price-asc">Precio: menor a mayor</option>
-            <option value="price-desc">Precio: mayor a menor</option>
-            </select>
-        </div>
-
-        {categories.length > 0 && (
-            <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
-            <button
-                type="button"
-                onClick={() => setSelectedCategory(null)}
-                className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
-                selectedCategory === null
-                    ? "bg-[#8a5a39] text-white"
-                    : "border border-[#eadfd2] bg-white text-[#8a5a39] hover:bg-[#f7f1e8]"
-                }`}
-            >
-                Todas
-            </button>
-
-            {categories.map((category) => (
-                <button
-                type="button"
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
-                    selectedCategory === category
-                    ? "bg-[#8a5a39] text-white"
-                    : "border border-[#eadfd2] bg-white text-[#8a5a39] hover:bg-[#f7f1e8]"
-                }`}
-                >
-                {category}
-                </button>
-            ))}
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary sm:text-base">
+                Piezas seleccionadas para decorar, organizar y entregar calidez
+                natural a tu hogar.
+              </p>
             </div>
-        )}
-        </div>
-    )}
 
-    {/* Grid productos */}
-    {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 xl:grid-cols-3">
-        {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-        ))}
+            <div className="rounded-2xl border border-border bg-cream/70 px-4 py-3 text-sm font-bold text-text-secondary">
+              <span className="text-coffee">{filteredProducts.length}</span> de{" "}
+              <span className="text-coffee">{products.length}</span> productos
+            </div>
+          </div>
+
+          {!featured && (
+            <div className="mt-6 border-t border-border pt-5">
+              <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
+                <input
+                  type="text"
+                  placeholder="Buscar productos..."
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  className="w-full rounded-full border border-border bg-white px-5 py-3 text-text-dark shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+                />
+
+                <label htmlFor="sort-products" className="sr-only">
+                  Ordenar productos
+                </label>
+
+                <select
+                  id="sort-products"
+                  value={sortBy}
+                  onChange={(event) => setSortBy(event.target.value as SortBy)}
+                  className="rounded-full border border-border bg-white px-5 py-3 text-text-dark shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+                >
+                  <option value="name">Ordenar por nombre</option>
+                  <option value="price-asc">Precio: menor a mayor</option>
+                  <option value="price-desc">Precio: mayor a menor</option>
+                </select>
+              </div>
+
+              {categories.length > 0 && (
+                <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCategory(null)}
+                    className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold transition ${
+                      selectedCategory === null
+                        ? "bg-coffee text-white shadow-sm"
+                        : "border border-border bg-white text-coffee hover:bg-cream"
+                    }`}
+                  >
+                    Todas
+                  </button>
+
+                  {categories.map((category) => (
+                    <button
+                      type="button"
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold transition ${
+                        selectedCategory === category
+                          ? "bg-coffee text-white shadow-sm"
+                          : "border border-border bg-white text-coffee hover:bg-cream"
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
-    ) : (
-        <div className="rounded-[2rem] border border-[#eadfd2] bg-white px-6 py-16 text-center shadow-sm">
-        <p className="font-bold text-[#17241e]">No se encontraron productos</p>
-        <p className="mt-2 text-sm text-[#65736a]">
-            Prueba cambiando la búsqueda o la categoría.
-        </p>
-        </div>
-    )}
-    </div>
+
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 xl:grid-cols-3">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-[2rem] border border-border bg-white px-6 py-16 text-center shadow-soft">
+            <p className="font-black text-text-dark">No se encontraron productos</p>
+            <p className="mt-2 text-sm text-text-secondary">
+              Prueba cambiando la búsqueda o la categoría.
+            </p>
+          </div>
+        )}
+      </div>
     </section>
   );
 }

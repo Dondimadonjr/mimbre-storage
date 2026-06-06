@@ -4,7 +4,7 @@ import ProductsGrid from "@/components/ProductsGrid";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#FAF6F0]">
+    <main className="min-h-screen bg-cream">
       <Hero />
       <Categories />
       <ProductsGrid />
