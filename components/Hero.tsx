@@ -57,15 +57,15 @@ export default function Hero() {
         </div>
 
         <div className="relative">
-          <div className="overflow-hidden rounded-[2rem] border border-white bg-white shadow-[0_20px_60px_rgba(79,50,28,0.13)]">
-            <div className="relative h-72 bg-gradient-to-br from-white via-cream to-coffee/10 sm:h-96 lg:h-[460px]">
+          <div className="overflow-hidden rounded-4xl border border-white bg-white shadow-[0_20px_60px_rgba(79,50,28,0.13)]">
+            <div className="relative h-72 bg-linear-to-br from-white via-cream to-coffee/10 sm:h-96 lg:h-115">
               <Image
-                src="/image/canasto.webp"
-                alt="Canasto artesanal de mimbre"
+                src="/icons/imagenHome.png"
+                alt="Pieza artesanal de mimbre para decoración del hogar"
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 42vw"
-                className="object-contain p-7 drop-shadow-[0_20px_28px_rgba(93,58,31,0.16)] sm:p-9"
+                className="object-cover"
               />
             </div>
 

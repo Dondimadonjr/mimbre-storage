@@ -21,6 +21,19 @@ export default function ProductsGrid({ featured = false }: ProductsGridProps) {
   const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
+    const handleCategorySelected = (event: Event) => {
+      const customEvent = event as CustomEvent<string>;
+      setSelectedCategory(customEvent.detail);
+    };
+
+    window.addEventListener("category:selected", handleCategorySelected);
+
+    return () => {
+      window.removeEventListener("category:selected", handleCategorySelected);
+    };
+  }, []);
+
+  useEffect(() => {
     const loadProducts = async () => {
       try {
         setLoading(true);
@@ -98,13 +111,13 @@ export default function ProductsGrid({ featured = false }: ProductsGridProps) {
         className="relative overflow-hidden bg-cream px-4 py-14 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
-          <div className="mb-8 h-28 animate-pulse rounded-[2rem] bg-white/75" />
+          <div className="mb-8 h-28 animate-pulse rounded-4xl bg-white/75" />
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((item) => (
               <div
                 key={item}
-                className="h-[460px] animate-pulse rounded-[28px] border border-border bg-white/80 shadow-sm"
+                className="h-115 animate-pulse rounded-[28px] border border-border bg-white/80 shadow-sm"
               />
             ))}
           </div>
@@ -116,7 +129,7 @@ export default function ProductsGrid({ featured = false }: ProductsGridProps) {
   if (error) {
     return (
       <section id="productos" className="bg-cream px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl rounded-[2rem] border border-red-200 bg-red-50 px-6 py-10 text-center shadow-sm">
+        <div className="mx-auto max-w-3xl rounded-4xl border border-red-200 bg-red-50 px-6 py-10 text-center shadow-sm">
           <p className="font-black text-red-700">Error al cargar productos</p>
           <p className="mt-2 text-sm text-red-600">{error}</p>
         </div>
@@ -127,7 +140,7 @@ export default function ProductsGrid({ featured = false }: ProductsGridProps) {
   if (products.length === 0) {
     return (
       <section id="productos" className="bg-cream px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl rounded-[2rem] border border-border bg-white px-6 py-16 text-center shadow-soft">
+        <div className="mx-auto max-w-3xl rounded-4xl border border-border bg-white px-6 py-16 text-center shadow-soft">
           <p className="font-black text-text-dark">No hay productos disponibles</p>
           <p className="mt-2 text-sm text-text-secondary">
             Agrega productos desde el panel administrador.
@@ -145,7 +158,7 @@ export default function ProductsGrid({ featured = false }: ProductsGridProps) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_8%_10%,rgba(139,94,60,0.08),transparent_28%),radial-gradient(circle_at_92%_24%,rgba(216,180,138,0.18),transparent_30%)]" />
 
       <div className="relative mx-auto max-w-7xl">
-        <div className="mb-8 rounded-[2rem] border border-border bg-white/82 p-5 shadow-soft backdrop-blur sm:p-6">
+        <div className="mb-8 rounded-4xl border border-border bg-white/82 p-5 shadow-soft backdrop-blur sm:p-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-coffee/15 bg-cream px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-coffee">
@@ -237,7 +250,7 @@ export default function ProductsGrid({ featured = false }: ProductsGridProps) {
             ))}
           </div>
         ) : (
-          <div className="rounded-[2rem] border border-border bg-white px-6 py-16 text-center shadow-soft">
+          <div className="rounded-4xl border border-border bg-white px-6 py-16 text-center shadow-soft">
             <p className="font-black text-text-dark">No se encontraron productos</p>
             <p className="mt-2 text-sm text-text-secondary">
               Prueba cambiando la búsqueda o la categoría.
