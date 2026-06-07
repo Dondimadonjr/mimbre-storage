@@ -60,7 +60,7 @@ export default function Hero() {
           <div className="overflow-hidden rounded-4xl border border-white bg-white shadow-[0_20px_60px_rgba(79,50,28,0.13)]">
             <div className="relative h-72 bg-linear-to-br from-white via-cream to-coffee/10 sm:h-96 lg:h-115">
               <Image
-                src="/icons/imagenHome.png"
+                src="/image/imagenHome.png"
                 alt="Pieza artesanal de mimbre para decoración del hogar"
                 fill
                 priority
