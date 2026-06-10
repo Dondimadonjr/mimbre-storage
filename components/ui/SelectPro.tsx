@@ -99,7 +99,7 @@ export default function SelectPro({
       {open ? (
         <div
           role="listbox"
-          className="absolute left-0 right-0 z-[120] mt-2 max-h-72 overflow-auto rounded-2xl border border-border bg-white p-2 shadow-[0_20px_55px_rgba(49,39,31,0.16)]"
+          className="absolute left-0 right-0 z-120 mt-2 max-h-72 overflow-auto rounded-2xl border border-border bg-white p-2 shadow-[0_20px_55px_rgba(49,39,31,0.16)]"
         >
           {options.map((option) => {
             const isSelected = option.value === value;

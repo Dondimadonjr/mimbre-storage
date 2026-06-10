@@ -13,6 +13,7 @@ type Tab = "productos" | "ordenes";
 type ProductStatusFilter = "todos" | "disponibles" | "no-disponibles" | "stock-bajo";
 type ProductSort = "nombre" | "precio" | "stock";
 type OrderStatusFilter = "todas" | "pagado" | "pendiente" | "rechazado" | "cancelado";
+type OrderItemsMap = Record<string, OrderItem[]>;
 
 const LOW_STOCK_LIMIT = 5;
 
@@ -75,6 +76,28 @@ function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-CL");
 }
 
+function formatDateTime(date: string) {
+  return new Date(date).toLocaleString("es-CL", {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+}
+
+function isToday(date: string) {
+  const value = new Date(date);
+  const today = new Date();
+
+  return (
+    value.getFullYear() === today.getFullYear() &&
+    value.getMonth() === today.getMonth() &&
+    value.getDate() === today.getDate()
+  );
+}
+
+function getOrderItemCount(items: OrderItem[]) {
+  return items.reduce((total, item) => total + Number(item.quantity), 0);
+}
+
 function normalizePhoneForWhatsApp(phone: string) {
   return phone.replace(/[\s+\-()]/g, "");
 }
@@ -124,6 +147,9 @@ export default function AdminDashboardClient() {
   const [tab, setTab] = useState<Tab>("productos");
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [orderItemsByOrderId, setOrderItemsByOrderId] = useState<OrderItemsMap>(
+    {}
+  );
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -170,8 +196,41 @@ export default function AdminDashboardClient() {
     if (error) {
       console.error("Error loading orders:", error);
       setOrders([]);
+      setOrderItemsByOrderId({});
     } else {
-      setOrders(data || []);
+      const nextOrders = data || [];
+      setOrders(nextOrders);
+
+      if (nextOrders.length === 0) {
+        setOrderItemsByOrderId({});
+      } else {
+        const { data: itemsData, error: itemsError } = await supabase
+          .from("order_items")
+          .select("*")
+          .in(
+            "order_id",
+            nextOrders.map((order) => order.id)
+          );
+
+        if (itemsError) {
+          console.error("Error loading order items summary:", itemsError);
+          setOrderItemsByOrderId({});
+        } else {
+          const itemsMap = (itemsData || []).reduce<OrderItemsMap>(
+            (accumulator, item) => {
+              accumulator[item.order_id] = [
+                ...(accumulator[item.order_id] || []),
+                item,
+              ];
+
+              return accumulator;
+            },
+            {}
+          );
+
+          setOrderItemsByOrderId(itemsMap);
+        }
+      }
     }
 
     setLoadingOrders(false);
@@ -277,6 +336,7 @@ export default function AdminDashboardClient() {
       ).length,
       paidOrders: paidOrders.length,
       pendingOrders: orders.filter((order) => order.status === "pendiente").length,
+      todayOrders: orders.filter((order) => isToday(order.created_at)).length,
       totalSold: paidOrders.reduce((total, order) => total + Number(order.total), 0),
     };
   }, [orders, products]);
@@ -375,15 +435,16 @@ export default function AdminDashboardClient() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-coffee font-black shadow-md">
-              M
+              R
             </div>
 
             <div className="min-w-0">
               <h1 className="truncate text-lg font-black leading-tight sm:text-xl">
-                Panel Admin
+                <span className="lg:hidden">Pedidos</span>
+                <span className="hidden lg:inline">Panel Admin</span>
               </h1>
               <p className="truncate text-xs text-white/60">
-                Gestión de Raíz y Mimbre
+                Raíz y Mimbre
               </p>
             </div>
           </div>
@@ -397,7 +458,20 @@ export default function AdminDashboardClient() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:py-7">
+      <AdminMobileOrders
+        orders={orders}
+        filteredOrders={filteredOrders}
+        orderStatus={orderStatus}
+        orderSearch={orderSearch}
+        metrics={metrics}
+        loadingOrders={loadingOrders}
+        orderItemsByOrderId={orderItemsByOrderId}
+        onStatusChange={setOrderStatus}
+        onSearchChange={setOrderSearch}
+        onOpenOrderDetail={handleOpenOrderDetail}
+      />
+
+      <main className="mx-auto hidden max-w-7xl px-4 py-5 sm:px-6 lg:block lg:py-7">
         <section className="mx-auto mb-5 grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           <MetricCard
             label="Productos" 
@@ -960,6 +1034,273 @@ export default function AdminDashboardClient() {
           onClose={handleCloseOrderDetail}
         />
       )}
+    </div>
+  );
+}
+
+function AdminMobileOrders({
+  orders,
+  filteredOrders,
+  orderStatus,
+  orderSearch,
+  metrics,
+  loadingOrders,
+  orderItemsByOrderId,
+  onStatusChange,
+  onSearchChange,
+  onOpenOrderDetail,
+}: {
+  orders: Order[];
+  filteredOrders: Order[];
+  orderStatus: OrderStatusFilter;
+  orderSearch: string;
+  metrics: {
+    paidOrders: number;
+    pendingOrders: number;
+    todayOrders: number;
+    totalSold: number;
+  };
+  loadingOrders: boolean;
+  orderItemsByOrderId: OrderItemsMap;
+  onStatusChange: (status: OrderStatusFilter) => void;
+  onSearchChange: (search: string) => void;
+  onOpenOrderDetail: (order: Order) => Promise<void>;
+}) {
+  const [copiedOrderId, setCopiedOrderId] = useState<string | null>(null);
+
+  const copyOrderSummary = async (order: Order) => {
+    const items = orderItemsByOrderId[order.id] || [];
+
+    try {
+      await navigator.clipboard.writeText(buildOrderSummary(order, items));
+      setCopiedOrderId(order.id);
+      window.setTimeout(() => setCopiedOrderId(null), 1800);
+    } catch (error) {
+      console.error("Error copying order summary:", error);
+    }
+  };
+
+  const openWhatsApp = (order: Order) => {
+    if (!order.customer_phone) return;
+
+    const phone = normalizePhoneForWhatsApp(order.customer_phone);
+
+    if (!phone) return;
+
+    const items = orderItemsByOrderId[order.id] || [];
+
+    window.open(
+      `https://wa.me/${phone}?text=${buildOrderMessage(order, items)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
+  return (
+    <main className="mx-auto max-w-3xl px-4 pb-24 pt-4 lg:hidden">
+      <section className="rounded-4xl border border-border bg-white/95 p-4 shadow-soft">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-coffee">
+              Centro de pedidos
+            </p>
+            <h2 className="mt-2 text-2xl font-black leading-tight text-text-dark">
+              Pedidos
+            </h2>
+            <p className="mt-1 text-sm text-text-secondary">
+              Revisa ventas, pendientes y contactos desde el celular.
+            </p>
+          </div>
+
+          <span className="rounded-full bg-cream px-3 py-1.5 text-xs font-black text-coffee ring-1 ring-border">
+            {filteredOrders.length}/{orders.length}
+          </span>
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <MobileMetric label="Pagados" value={metrics.paidOrders} tone="green" />
+          <MobileMetric
+            label="Pendientes"
+            value={metrics.pendingOrders}
+            tone="yellow"
+          />
+          <MobileMetric label="Hoy" value={metrics.todayOrders} tone="coffee" />
+          <MobileMetric
+            label="Vendido"
+            value={formatCurrency(metrics.totalSold)}
+            tone="coffee"
+          />
+        </div>
+      </section>
+
+      <section className="sticky top-16.25 z-30 mt-4 rounded-3xl border border-border bg-cream/95 p-3 shadow-sm backdrop-blur">
+        <input
+          type="search"
+          value={orderSearch}
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder="Buscar cliente u orden"
+          className="h-12 w-full rounded-2xl border border-border bg-white px-4 text-sm font-semibold text-text-dark outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
+        />
+
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+          {orderStatusOptions.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onStatusChange(option.value as OrderStatusFilter)}
+              className={`shrink-0 rounded-full px-4 py-2 text-sm font-black transition active:scale-[0.98] ${
+                orderStatus === option.value
+                  ? "bg-coffee text-white shadow-md shadow-coffee/20"
+                  : "border border-border bg-white text-text-secondary"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-4 grid gap-3">
+        {loadingOrders ? (
+          <div className="rounded-3xl border border-border bg-white p-5 text-sm font-bold text-text-secondary shadow-sm">
+            Cargando pedidos...
+          </div>
+        ) : filteredOrders.length === 0 ? (
+          <div className="rounded-3xl border border-border bg-white p-6 text-center shadow-sm">
+            <p className="font-black text-text-dark">No hay pedidos para este filtro</p>
+            <p className="mt-2 text-sm text-text-secondary">
+              Prueba cambiando estado o búsqueda.
+            </p>
+          </div>
+        ) : (
+          filteredOrders.map((order) => {
+            const items = orderItemsByOrderId[order.id] || [];
+            const itemCount = getOrderItemCount(items);
+            const address = buildOrderAddress(order);
+            const canUseWhatsApp = Boolean(order.customer_phone);
+
+            return (
+              <article
+                key={order.id}
+                className="rounded-[1.6rem] border border-border bg-white p-4 shadow-[0_14px_35px_rgba(49,39,31,0.08)]"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-mono text-sm font-black text-coffee">
+                      #{order.id.slice(0, 8)}
+                    </p>
+                    <h3 className="mt-2 line-clamp-2 text-lg font-black leading-tight text-text-dark">
+                      {order.customer_name}
+                    </h3>
+                    <p className="mt-1 text-xs font-semibold text-text-secondary">
+                      {formatDateTime(order.created_at)}
+                    </p>
+                  </div>
+
+                  <span
+                    className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-black ring-1 ${getOrderBadgeClass(
+                      order.status
+                    )}`}
+                  >
+                    {order.status}
+                  </span>
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2 rounded-2xl bg-cream/65 p-3 text-sm">
+                  <div>
+                    <p className="text-text-secondary">Total</p>
+                    <p className="font-black text-coffee">
+                      {formatCurrency(order.total)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-text-secondary">Productos</p>
+                    <p className="font-black text-text-dark">{itemCount}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-text-secondary">Ubicación</p>
+                    <p className="line-clamp-1 font-black text-text-dark">
+                      {order.customer_commune || address || "No informado"}
+                    </p>
+                  </div>
+                  {order.customer_phone ? (
+                    <div className="col-span-2">
+                      <p className="text-text-secondary">Teléfono</p>
+                      <p className="font-black text-text-dark">
+                        {order.customer_phone}
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => void onOpenOrderDetail(order)}
+                    className="col-span-2 rounded-full bg-coffee px-4 py-3 text-sm font-black text-white shadow-lg shadow-coffee/20 transition active:scale-[0.98]"
+                  >
+                    Ver detalle
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => void copyOrderSummary(order)}
+                    className="rounded-full border border-border bg-white px-4 py-3 text-sm font-black text-coffee transition active:scale-[0.98]"
+                  >
+                    {copiedOrderId === order.id ? "Copiado" : "Copiar"}
+                  </button>
+
+                  {canUseWhatsApp ? (
+                    <button
+                      type="button"
+                      onClick={() => openWhatsApp(order)}
+                      className="rounded-full border border-green-200 bg-green-50 px-4 py-3 text-sm font-black text-green-700 transition active:scale-[0.98]"
+                    >
+                      WhatsApp
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="rounded-full border border-border bg-cream px-4 py-3 text-sm font-black text-text-secondary opacity-70"
+                    >
+                      Sin teléfono
+                    </button>
+                  )}
+                </div>
+              </article>
+            );
+          })
+        )}
+      </section>
+    </main>
+  );
+}
+
+function MobileMetric({
+  label,
+  value,
+  tone = "default",
+}: {
+  label: string;
+  value: string | number;
+  tone?: "default" | "green" | "yellow" | "coffee";
+}) {
+  const toneClass = {
+    default: "text-text-dark",
+    green: "text-green-700",
+    yellow: "text-yellow-700",
+    coffee: "text-coffee",
+  }[tone];
+
+  return (
+    <div className="rounded-2xl border border-border bg-cream/60 p-3">
+      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-text-secondary">
+        {label}
+      </p>
+      <p className={`mt-1 text-lg font-black leading-tight ${toneClass}`}>
+        {value}
+      </p>
     </div>
   );
 }
