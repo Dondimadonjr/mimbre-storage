@@ -7,6 +7,7 @@ import { formatCurrency } from "@/lib/format";
 import AdminProductForm from "@/components/AdminProductForm";
 import type { Product } from "@/types/product";
 import type { Order, OrderItem } from "@/types/order";
+import SelectPro, { type SelectProOption } from "@/components/ui/SelectPro";
 
 type Tab = "productos" | "ordenes";
 type ProductStatusFilter = "todos" | "disponibles" | "no-disponibles" | "stock-bajo";
@@ -14,6 +15,27 @@ type ProductSort = "nombre" | "precio" | "stock";
 type OrderStatusFilter = "todas" | "pagado" | "pendiente" | "rechazado" | "cancelado";
 
 const LOW_STOCK_LIMIT = 5;
+
+const productStatusOptions: SelectProOption[] = [
+  { label: "Todos", value: "todos" },
+  { label: "Disponibles", value: "disponibles" },
+  { label: "No disponibles", value: "no-disponibles" },
+  { label: "Stock bajo", value: "stock-bajo" },
+];
+
+const productSortOptions: SelectProOption[] = [
+  { label: "Nombre", value: "nombre" },
+  { label: "Precio", value: "precio" },
+  { label: "Stock", value: "stock" },
+];
+
+const orderStatusOptions: SelectProOption[] = [
+  { label: "Todas", value: "todas" },
+  { label: "Pagadas", value: "pagado" },
+  { label: "Pendientes", value: "pendiente" },
+  { label: "Rechazadas", value: "rechazado" },
+  { label: "Canceladas", value: "cancelado" },
+];
 
 function normalizeText(value: string | null | undefined) {
   return String(value ?? "").trim().toLowerCase();
@@ -361,7 +383,7 @@ export default function AdminDashboardClient() {
                 Panel Admin
               </h1>
               <p className="truncate text-xs text-white/60">
-                Gestión de Mimbre Store
+                Gestión de Raíz y Mimbre
               </p>
             </div>
           </div>
@@ -482,7 +504,7 @@ export default function AdminDashboardClient() {
                 </div>
               </div>
             ) : (
-              <div className="overflow-hidden rounded-4xl border border-border bg-white/95 shadow-soft">
+              <div className="overflow-visible rounded-4xl border border-border bg-white/95 shadow-soft">
                 <div className="border-b border-border bg-cream/50 p-5">
                   <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
                     <div>
@@ -512,53 +534,46 @@ export default function AdminDashboardClient() {
                         <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-text-secondary">
                           Estado
                         </span>
-                        <select
+                        <SelectPro
                           value={productStatus}
-                          onChange={(event) =>
-                            setProductStatus(event.target.value as ProductStatusFilter)
+                          options={productStatusOptions}
+                          onChange={(nextValue) =>
+                            setProductStatus(nextValue as ProductStatusFilter)
                           }
-                          className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
-                        >
-                          <option value="todos">Todos</option>
-                          <option value="disponibles">Disponibles</option>
-                          <option value="no-disponibles">No disponibles</option>
-                          <option value="stock-bajo">Stock bajo</option>
-                        </select>
+                          fullWidth
+                        />
                       </label>
 
                       <label className="block">
                         <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-text-secondary">
                           Categoría
                         </span>
-                        <select
+                        <SelectPro
                           value={productCategory}
-                          onChange={(event) => setProductCategory(event.target.value)}
-                          className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
-                        >
-                          <option value="todas">Todas</option>
-                          {categories.map((category) => (
-                            <option key={category} value={category}>
-                              {category}
-                            </option>
-                          ))}
-                        </select>
+                          options={[
+                            { label: "Todas", value: "todas" },
+                            ...categories.map((category) => ({
+                              label: category,
+                              value: category,
+                            })),
+                          ]}
+                          onChange={setProductCategory}
+                          fullWidth
+                        />
                       </label>
 
                       <label className="block">
                         <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-text-secondary">
                           Ordenar
                         </span>
-                        <select
+                        <SelectPro
                           value={productSort}
-                          onChange={(event) =>
-                            setProductSort(event.target.value as ProductSort)
+                          options={productSortOptions}
+                          onChange={(nextValue) =>
+                            setProductSort(nextValue as ProductSort)
                           }
-                          className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
-                        >
-                          <option value="nombre">Nombre</option>
-                          <option value="precio">Precio</option>
-                          <option value="stock">Stock</option>
-                        </select>
+                          fullWidth
+                        />
                       </label>
                     </div>
                   </div>
@@ -746,7 +761,7 @@ export default function AdminDashboardClient() {
         )}
 
         {tab === "ordenes" && (
-          <section className="overflow-hidden rounded-4xl border border-border bg-white/95 shadow-soft">
+          <section className="overflow-visible rounded-4xl border border-border bg-white/95 shadow-soft">
             <div className="border-b border-border bg-cream/50 p-5">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
@@ -776,19 +791,14 @@ export default function AdminDashboardClient() {
                     <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-text-secondary">
                       Estado
                     </span>
-                    <select
+                    <SelectPro
                       value={orderStatus}
-                      onChange={(event) =>
-                        setOrderStatus(event.target.value as OrderStatusFilter)
+                      options={orderStatusOptions}
+                      onChange={(nextValue) =>
+                        setOrderStatus(nextValue as OrderStatusFilter)
                       }
-                      className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
-                    >
-                      <option value="todas">Todas</option>
-                      <option value="pagado">Pagadas</option>
-                      <option value="pendiente">Pendientes</option>
-                      <option value="rechazado">Rechazadas</option>
-                      <option value="cancelado">Canceladas</option>
-                    </select>
+                      fullWidth
+                    />
                   </label>
                 </div>
               </div>

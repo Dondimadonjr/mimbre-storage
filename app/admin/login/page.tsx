@@ -44,7 +44,7 @@ export default function AdminLoginPage() {
           <h1 className="text-2xl font-bold text-text-dark">
             Panel Administrador
           </h1>
-          <p className="text-text-secondary mt-2">Mimbre Store</p>
+          <p className="text-text-secondary mt-2">Raíz y Mimbre</p>
         </div>
 
         {error && (

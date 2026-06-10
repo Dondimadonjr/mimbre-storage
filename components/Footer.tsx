@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
+import ScrollLink from "@/components/ScrollLink";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -16,7 +16,7 @@ export default function Footer() {
               <div className="w-8 h-8 bg-coffee rounded-lg flex items-center justify-center font-bold text-lg">
                 M
               </div>
-              <span className="font-bold text-lg">Mimbre Store</span>
+              <span className="font-bold text-lg">Raíz y Mimbre</span>
             </div>
             <p className="text-gray-400 text-sm">
               Artesanía en mimbre hecha a mano con pasión y diseño premium.
@@ -28,36 +28,44 @@ export default function Footer() {
             <h4 className="font-semibold text-coffee">Navegación</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link
+                <ScrollLink
                   href="/#inicio"
                   className="text-gray-400 hover:text-coffee transition-colors"
                 >
                   Inicio
-                </Link>
+                </ScrollLink>
               </li>
               <li>
-                <Link
+                <ScrollLink
                   href="/#productos"
                   className="text-gray-400 hover:text-coffee transition-colors"
                 >
                   Productos
-                </Link>
+                </ScrollLink>
               </li>
               <li>
-                <Link
+                <ScrollLink
+                  href="/#servicios"
+                  className="text-gray-400 hover:text-coffee transition-colors"
+                >
+                  Servicios
+                </ScrollLink>
+              </li>
+              <li>
+                <ScrollLink
                   href="/#nosotros"
                   className="text-gray-400 hover:text-coffee transition-colors"
                 >
                   Nosotros
-                </Link>
+                </ScrollLink>
               </li>
               <li>
-                <Link
+                <ScrollLink
                   href="/#contacto"
                   className="text-gray-400 hover:text-coffee transition-colors"
                 >
                   Contacto
-                </Link>
+                </ScrollLink>
               </li>
             </ul>
           </div>
@@ -135,10 +143,10 @@ export default function Footer() {
         </div>
 
         {/* Divisor */}
-        <div className="border-t border-gray-700 pt-8">
+        <div className="border-t border-gray-700 pt-3">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {currentYear} Mimbre Store. Todos los derechos reservados.
+              © {currentYear} Raíz y Mimbre. Todos los derechos reservados.
             </p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <a

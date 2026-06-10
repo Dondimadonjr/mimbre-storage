@@ -47,7 +47,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-border bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-coffee/25 hover:shadow-[0_24px_60px_rgba(93,58,31,0.14)]">
+    <article className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-border bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-coffee/25 hover:shadow-[0_24px_60px_rgba(93,58,31,0.14)] sm:rounded-[28px]">
       {/* Imagen */}
       <Link href={`/productos/${product.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-cream via-white to-coffee/10">
@@ -57,7 +57,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               alt={product.name}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-contain p-7 drop-shadow-[0_18px_26px_rgba(93,58,31,0.16)] transition-transform duration-500 group-hover:scale-[1.06] sm:p-8"
+              className="object-contain p-5 drop-shadow-[0_18px_26px_rgba(93,58,31,0.16)] transition-transform duration-500 group-hover:scale-[1.06] sm:p-8"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
@@ -67,7 +67,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,transparent_38%,rgba(93,58,31,0.08)_100%)]" />
 
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 translate-y-2 rounded-full border border-border bg-white/95 px-5 py-2 text-xs font-bold text-coffee opacity-0 shadow-soft backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 translate-y-2 rounded-full border border-border bg-white/95 px-4 py-2 text-xs font-bold text-coffee opacity-0 shadow-soft backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 sm:bottom-4 sm:px-5">
             Ver detalle →
           </div>
 
@@ -90,9 +90,9 @@ export default function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       {/* Contenido */}
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
+      <div className="flex flex-1 flex-col p-4 sm:p-6">
         {/* Meta */}
-        <div className="mb-4 flex min-h-7 flex-wrap items-center gap-2">
+        <div className="mb-3 flex min-h-7 flex-wrap items-center gap-2 sm:mb-4">
           {product.category && (
             <span className="rounded-full border border-coffee/15 bg-cream px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-coffee">
               {product.category}
@@ -106,41 +106,41 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Nombre */}
         <Link href={`/productos/${product.id}`} className="block">
-          <h3 className="mb-3 line-clamp-2 text-xl font-black leading-snug text-text-dark transition-colors group-hover:text-coffee">
+          <h3 className="mb-2 line-clamp-2 text-lg font-black leading-snug text-text-dark transition-colors group-hover:text-coffee sm:mb-3 sm:text-xl">
             {product.name}
           </h3>
         </Link>
 
         {/* Descripción */}
         {product.description && (
-          <p className="line-clamp-2 min-h-12 flex-1 text-sm leading-6 text-text-secondary">
+          <p className="line-clamp-2 flex-1 text-sm leading-5 text-text-secondary sm:min-h-12 sm:leading-6">
             {product.description}
           </p>
         )}
 
-        <div className="my-5 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="my-4 h-px bg-gradient-to-r from-transparent via-border to-transparent sm:my-5" />
 
         {/* Precio */}
         <div className="mt-auto">
-          <div className="flex items-end justify-between gap-3 rounded-2xl bg-cream/70 px-4 py-3">
+          <div className="flex items-end justify-between gap-3 rounded-2xl bg-cream/70 px-3.5 py-3 sm:px-4">
             <div>
               <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.24em] text-coffee/70">
                 Valor
               </p>
 
-              <p className="text-3xl font-black leading-none tracking-tight text-coffee">
+              <p className="text-2xl font-black leading-none tracking-tight text-coffee sm:text-3xl">
                 {formatCurrency(product.price)}
               </p>
             </div>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="mt-4 grid grid-cols-2 gap-2.5 sm:mt-5 sm:gap-3">
             <button
               type="button"
               onClick={handleAddToCart}
               aria-label={`Agregar ${product.name} al carrito`}
               disabled={!isAvailable}
-              className={`rounded-full px-4 py-3 text-sm font-black shadow-sm transition-all duration-300 active:scale-[0.98] ${
+              className={`rounded-full px-3 py-2.5 text-sm font-black shadow-sm transition-all duration-300 active:scale-[0.98] sm:px-4 sm:py-3 ${
                 addedToCart
                   ? "bg-green-600 text-white shadow-md"
                   : isAvailable
@@ -155,7 +155,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               type="button"
               onClick={handleWhatsApp}
               aria-label={`Consultar por WhatsApp sobre ${product.name}`}
-              className="rounded-full border border-green-600 bg-white px-4 py-3 text-sm font-black text-green-700 shadow-sm transition-all duration-300 hover:bg-green-50 active:scale-[0.98]"
+              className="rounded-full border border-green-600 bg-white px-3 py-2.5 text-sm font-black text-green-700 shadow-sm transition-all duration-300 hover:bg-green-50 active:scale-[0.98] sm:px-4 sm:py-3"
             >
               WhatsApp
             </button>

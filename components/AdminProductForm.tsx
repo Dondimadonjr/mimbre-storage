@@ -4,11 +4,23 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase/client";
 import type { Product, ProductFormData } from "@/types/product";
+import SelectPro, { type SelectProOption } from "@/components/ui/SelectPro";
 
 interface AdminProductFormProps {
   product?: Product;
   onSuccess?: () => void;
 }
+
+const categoryOptions: SelectProOption[] = [
+  { label: "Seleccionar categoría...", value: "" },
+  { label: "Canastos", value: "Canastos" },
+  { label: "Bandejas", value: "Bandejas" },
+  { label: "Decoración", value: "Decoración" },
+  { label: "Organizadores", value: "Organizadores" },
+  { label: "Iluminación", value: "Iluminación" },
+  { label: "Accesorios", value: "Accesorios" },
+  { label: "Otros", value: "Otros" },
+];
 
 export default function AdminProductForm({
   product,
@@ -175,7 +187,7 @@ export default function AdminProductForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="overflow-hidden rounded-[2rem] border border-border bg-white/95 shadow-soft"
+      className="overflow-visible rounded-[2rem] border border-border bg-white/95 shadow-soft"
     >
       <div className="border-b border-border bg-cream/50 px-5 py-4 sm:px-6">
         <p className="text-xs font-black uppercase tracking-[0.22em] text-coffee">
@@ -292,22 +304,17 @@ export default function AdminProductForm({
                 <label className="mb-1.5 block text-sm font-bold text-text-dark">
                   Categoría
                 </label>
-                <select
-                  title="categoría del producto"
-                  name="category"
+                <SelectPro
                   value={formData.category || ""}
-                  onChange={handleChange}
-                  className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-coffee focus:ring-4 focus:ring-coffee/10"
-                >
-                  <option value="">Seleccionar categoría...</option>
-                  <option value="Canastos">Canastos</option>
-                  <option value="Bandejas">Bandejas</option>
-                  <option value="Decoración">Decoración</option>
-                  <option value="Organizadores">Organizadores</option>
-                  <option value="Iluminación">Iluminación</option>
-                  <option value="Accesorios">Accesorios</option>
-                  <option value="Otros">Otros</option>
-                </select>
+                  options={categoryOptions}
+                  onChange={(nextValue) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      category: nextValue,
+                    }))
+                  }
+                  fullWidth
+                />
               </div>
             </section>
           </div>
