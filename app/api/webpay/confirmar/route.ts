@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { sendOrderPaidEmails } from '@/lib/emails/orderEmails'
 import { confirmWebpayTransaction } from '@/lib/webpay'
-import type { WebpayConfirmRequest } from '@/types/order'
+import type { Order, OrderItem, WebpayConfirmRequest } from '@/types/order'
 
 type OrderItemStockData = {
   product_id: string
@@ -11,6 +12,35 @@ type OrderItemStockData = {
 type ProductStockData = {
   id: string
   stock: number
+}
+
+async function loadOrderEmailData(orderId: string) {
+  const { data: order, error: orderError } = await supabaseAdmin
+    .from('orders')
+    .select('*')
+    .eq('id', orderId)
+    .single<Order>()
+
+  if (orderError || !order) {
+    console.error('Error loading order for paid email:', orderError)
+    return null
+  }
+
+  const { data: items, error: itemsError } = await supabaseAdmin
+    .from('order_items')
+    .select('*')
+    .eq('order_id', orderId)
+    .returns<OrderItem[]>()
+
+  if (itemsError) {
+    console.error('Error loading order items for paid email:', itemsError)
+    return null
+  }
+
+  return {
+    order,
+    items: items || [],
+  }
 }
 
 async function discountOrderStock(orderId: string) {
@@ -160,6 +190,18 @@ export async function POST(request: NextRequest) {
 
     if (updateError) {
       console.error('Error updating payment:', updateError)
+    }
+
+    if (
+      paymentStatus === 'pagado' &&
+      currentOrder.status !== 'pagado' &&
+      updatedOrder
+    ) {
+      const emailData = await loadOrderEmailData(payment.order_id)
+
+      if (emailData) {
+        await sendOrderPaidEmails(emailData)
+      }
     }
 
     return NextResponse.json({
