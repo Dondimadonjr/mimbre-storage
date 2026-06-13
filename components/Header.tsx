@@ -94,12 +94,13 @@ export default function Header() {
               }`}
             >
               <Image
-                src="/image/logo2.png"
+                src="/image/logo.png"
                 alt="Raíz y Mimbre"
                 fill
                 priority
+                unoptimized
                 sizes="48px"
-                className="scale-[1.28] object-contain object-center p-1.5"
+                className="object-contain object-center p-2"
               />
             </span>
 
