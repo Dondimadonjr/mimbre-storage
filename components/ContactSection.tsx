@@ -13,7 +13,7 @@ export default function ContactSection() {
       id="contacto"
       className="scroll-mt-24 bg-cream px-4 pb-12 pt-2 sm:px-6 lg:px-8"
     >
-      <div className="mx-auto grid max-w-7xl gap-6 rounded-[2rem] border border-border bg-white p-5 shadow-soft sm:p-7 lg:grid-cols-[1fr_0.78fr] lg:items-center">
+      <div className="mx-auto grid max-w-7xl gap-6 rounded-4xl border border-border bg-white p-5 shadow-soft sm:p-7 lg:grid-cols-[1fr_0.78fr] lg:items-center">
         <div>
           <p className="text-[11px] font-black uppercase tracking-[0.24em] text-coffee">
             Contacto

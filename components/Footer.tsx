@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { ReactNode } from "react";
 import ScrollLink from "@/components/ScrollLink";
@@ -45,7 +45,7 @@ export default function Footer() {
   return (
     <footer className="bg-text-dark px-4 py-10 text-white sm:px-6 lg:px-8 lg:py-14">
       <div className="mx-auto max-w-7xl">
-        <div className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 shadow-[0_28px_80px_rgba(0,0,0,0.22)] backdrop-blur sm:p-8 lg:p-10">
+        <div className="rounded-4xl border border-white/10 bg-white/4.5 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.22)] backdrop-blur sm:p-8 lg:p-10">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.25fr_0.8fr_1fr_1fr]">
             <div className="space-y-5">
               <div className="flex items-center gap-3">
@@ -132,7 +132,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={link.label}
-                    className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.06] text-white/70 transition duration-300 hover:-translate-y-0.5 hover:border-coffee/40 hover:bg-coffee hover:text-white"
+                    className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/6 text-white/70 transition duration-300 hover:-translate-y-0.5 hover:border-coffee/40 hover:bg-coffee hover:text-white"
                   >
                     <svg
                       className="h-5 w-5"

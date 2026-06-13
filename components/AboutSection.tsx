@@ -61,10 +61,10 @@ export default function AboutSection() {
   return (
     <section
       id="nosotros"
-      className="scroll-mt-28 bg-cream px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12"
+      className="scroll-mt-15 bg-cream px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-[2rem] border border-border bg-white shadow-[0_22px_80px_rgba(49,39,31,0.08)] sm:rounded-[2.5rem]">
+        <div className="relative overflow-hidden rounded-4xl border border-border bg-white shadow-[0_22px_80px_rgba(49,39,31,0.08)] sm:rounded-[2.5rem]">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-coffee/10 blur-3xl"

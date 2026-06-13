@@ -47,7 +47,7 @@ const sections = [
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-cream px-4 py-12 sm:px-6 lg:px-8">
-      <article className="mx-auto max-w-4xl rounded-[2rem] border border-border bg-white p-6 shadow-soft sm:p-10">
+      <article className="mx-auto max-w-4xl rounded-4xl border border-border bg-white p-6 shadow-soft sm:p-10">
         <p className="text-xs font-black uppercase tracking-[0.24em] text-coffee">
           Condiciones generales
         </p>

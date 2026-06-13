@@ -171,7 +171,7 @@ export default function ProductsGrid({ featured = false }: ProductsGridProps) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_8%_12%,rgba(139,94,60,0.07),transparent_30%),radial-gradient(circle_at_92%_20%,rgba(216,180,138,0.14),transparent_32%)]" />
 
       <div className="relative mx-auto max-w-7xl">
-        <div className="relative z-40 mb-6 overflow-visible rounded-[2rem] border border-border bg-white/88 p-4 shadow-[0_18px_58px_rgba(49,39,31,0.075)] backdrop-blur sm:p-5 lg:p-6">
+        <div className="relative z-40 mb-6 overflow-visible rounded-4xl border border-border bg-white/88 p-4 shadow-[0_18px_58px_rgba(49,39,31,0.075)] backdrop-blur sm:p-5 lg:p-6">
           <div className="grid gap-5">
             {/* Título */}
             <div>
@@ -221,7 +221,7 @@ export default function ProductsGrid({ featured = false }: ProductsGridProps) {
                     value={sortBy}
                     options={sortOptions}
                     onChange={(nextValue) => setSortBy(nextValue as SortBy)}
-                    className="relative z-[90] min-w-0"
+                    className="relative z-90 min-w-0"
                     fullWidth
                   />
                 </div>
