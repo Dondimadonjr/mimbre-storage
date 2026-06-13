@@ -24,6 +24,7 @@ export default function ProductDetailClient({ id }: ProductDetailClientProps) {
   const maxQuantity = Math.max(1, stock);
   const isPurchasable = Boolean(product?.available && stock > 0);
   const selectedQuantity = Math.min(quantity, maxQuantity);
+  const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP || "56972086522";
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -245,7 +246,7 @@ export default function ProductDetailClient({ id }: ProductDetailClientProps) {
                 </button>
 
                 <a
-                  href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP}?text=Me%20interesa%20${encodeURIComponent(
+                  href={`https://wa.me/${whatsappPhone}?text=Me%20interesa%20${encodeURIComponent(
                     product.name
                   )}%20-%20${encodeURIComponent(
                     formatCurrency(product.price)
