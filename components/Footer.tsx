@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import ScrollLink from "@/components/ScrollLink";
 
@@ -16,16 +16,16 @@ export default function Footer() {
               <div className="w-8 h-8 bg-coffee rounded-lg flex items-center justify-center font-bold text-lg">
                 M
               </div>
-              <span className="font-bold text-lg">Raíz y Mimbre</span>
+              <span className="font-bold text-lg">RaÃ­z y Mimbre</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Artesanía en mimbre hecha a mano con pasión y diseño premium.
+              ArtesanÃ­a en mimbre hecha a mano con pasiÃ³n y diseÃ±o premium.
             </p>
           </div>
 
           {/* Enlaces */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-coffee">Navegación</h4>
+            <h4 className="font-semibold text-coffee">NavegaciÃ³n</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <ScrollLink
@@ -76,7 +76,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <a
-                  href="#"
+                  href="/politica-privacidad"
                   className="text-gray-400 hover:text-coffee transition-colors"
                 >
                   Política de Privacidad
@@ -84,7 +84,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/terminos"
                   className="text-gray-400 hover:text-coffee transition-colors"
                 >
                   Términos de Servicio
@@ -92,7 +92,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/cambios-devoluciones"
                   className="text-gray-400 hover:text-coffee transition-colors"
                 >
                   Cambios y Devoluciones
@@ -100,7 +100,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/faq"
                   className="text-gray-400 hover:text-coffee transition-colors"
                 >
                   FAQ
@@ -146,7 +146,7 @@ export default function Footer() {
         <div className="border-t border-gray-700 pt-3">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {currentYear} Raíz y Mimbre. Todos los derechos reservados.
+              Â© {currentYear} RaÃ­z y Mimbre. Todos los derechos reservados.
             </p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <a
