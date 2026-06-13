@@ -11,6 +11,13 @@ type ScrollLinkProps = {
   onClick?: () => void;
 };
 
+const sectionOffsets: Record<string, number> = {
+  productos: 55,
+  servicios: 110,
+  nosotros: 110,
+  contacto: 100,
+};
+
 export default function ScrollLink({
   href,
   children,
@@ -55,9 +62,13 @@ export default function ScrollLink({
       return;
     }
 
-    section.scrollIntoView({
+    const offset = sectionOffsets[hash] ?? 100;
+    const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+    const scrollTarget = Math.max(sectionTop - offset, 0);
+
+    window.scrollTo({
+      top: scrollTarget,
       behavior: "smooth",
-      block: "start",
     });
 
     window.history.replaceState(null, "", `${targetPath}#${hash}`);
