@@ -44,32 +44,6 @@ function getFromAddress() {
   return `${fromName} <${fromAddress}>`;
 }
 
-function getEmailErrorDetails(error: unknown) {
-  if (error && typeof error === "object") {
-    const emailError = error as {
-      name?: unknown;
-      message?: unknown;
-      statusCode?: unknown;
-    };
-
-    return {
-      name: typeof emailError.name === "string" ? emailError.name : null,
-      message:
-        typeof emailError.message === "string" ? emailError.message : null,
-      statusCode:
-        typeof emailError.statusCode === "number"
-          ? emailError.statusCode
-          : null,
-    };
-  }
-
-  return {
-    name: null,
-    message: typeof error === "string" ? error : "Unknown email error",
-    statusCode: null,
-  };
-}
-
 function renderItemsTable(items: OrderItem[]) {
   if (items.length === 0) {
     return `
@@ -277,19 +251,6 @@ export async function sendOrderPaidEmails({
   order,
   items,
 }: SendOrderPaidEmailsParams) {
-  console.log("[EMAIL_DEBUG] iniciando envío de correos", {
-    orderId: order.id,
-  });
-
-  console.log("[EMAIL_DEBUG] env email", {
-    hasResendApiKey: Boolean(process.env.RESEND_API_KEY),
-    hasStoreNotificationEmail: Boolean(process.env.STORE_NOTIFICATION_EMAIL),
-    hasEmailFromAddress: Boolean(process.env.EMAIL_FROM_ADDRESS),
-    emailFromName: process.env.EMAIL_FROM_NAME ?? null,
-    ownerEmail: process.env.STORE_NOTIFICATION_EMAIL ?? null,
-    customerEmail: order.customer_email ?? null,
-  });
-
   const apiKey = process.env.RESEND_API_KEY;
   const notificationEmail = process.env.STORE_NOTIFICATION_EMAIL;
   const from = getFromAddress();
@@ -300,7 +261,6 @@ export async function sendOrderPaidEmails({
   }
 
   const resend = new Resend(apiKey);
-  console.log("[EMAIL_DEBUG] enviando correo dueño");
 
   const emails = [
     resend.emails.send({
@@ -313,8 +273,6 @@ export async function sendOrderPaidEmails({
   ];
 
   if (order.customer_email) {
-    console.log("[EMAIL_DEBUG] enviando correo cliente");
-
     emails.push(
       resend.emails.send({
         from,
@@ -328,28 +286,14 @@ export async function sendOrderPaidEmails({
 
   const results = await Promise.allSettled(emails);
 
-  results.forEach((result, index) => {
-    const recipient = index === 0 ? "dueño" : "cliente";
-
+  results.forEach((result) => {
     if (result.status === "rejected") {
-      console.error(`[EMAIL_DEBUG] error correo ${recipient}`, {
-        ...getEmailErrorDetails(result.reason),
-      });
       console.error("Error sending order paid email:", result.reason);
       return;
     }
 
     if (result.value.error) {
-      console.error(`[EMAIL_DEBUG] error correo ${recipient}`, {
-        ...getEmailErrorDetails(result.value.error),
-      });
       console.error("Error sending order paid email:", result.value.error);
-      return;
     }
-
-    console.log(`[EMAIL_DEBUG] resultado correo ${recipient}`, {
-      success: true,
-      id: result.value.data?.id ?? null,
-    });
   });
 }

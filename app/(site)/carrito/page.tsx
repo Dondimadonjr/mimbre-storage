@@ -17,19 +17,16 @@ import {
 import { formatCurrency } from "@/lib/format";
 import type { CartItem } from "@/types/cart";
 
-const CART_EVENT = "cart:updated";
 const EMPTY_CART_SNAPSHOT: CartItem[] = [];
 
-function emitCartUpdate() {
-  window.dispatchEvent(new Event(CART_EVENT));
-}
-
 function subscribeCart(callback: () => void) {
-  window.addEventListener(CART_EVENT, callback);
+  window.addEventListener("cart:updated", callback);
+  window.addEventListener("cart-updated", callback);
   window.addEventListener("storage", callback);
 
   return () => {
-    window.removeEventListener(CART_EVENT, callback);
+    window.removeEventListener("cart:updated", callback);
+    window.removeEventListener("cart-updated", callback);
     window.removeEventListener("storage", callback);
   };
 }
@@ -58,17 +55,14 @@ export default function CartPage() {
 
   const handleIncrease = (productId: string) => {
     increaseQuantity(productId);
-    emitCartUpdate();
   };
 
   const handleDecrease = (productId: string) => {
     decreaseQuantity(productId);
-    emitCartUpdate();
   };
 
   const handleRemove = (productId: string) => {
     removeFromCart(productId);
-    emitCartUpdate();
   };
 
   const handleClear = () => {
@@ -77,7 +71,6 @@ export default function CartPage() {
     if (!confirmClear) return;
 
     clearCart();
-    emitCartUpdate();
   };
 
   return (

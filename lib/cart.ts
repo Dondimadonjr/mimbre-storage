@@ -2,10 +2,21 @@ import type { CartItem } from "@/types/cart";
 import { calculateCartTotals } from "./format";
 
 const CART_KEY = "mimbre_store_cart";
+const CART_EVENTS = ["cart-updated", "cart:updated"] as const;
 const EMPTY_CART: CartItem[] = [];
 
 let cachedCartRaw: string | null | undefined;
 let cachedCartItems: CartItem[] = EMPTY_CART;
+
+function notifyCartUpdated(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  CART_EVENTS.forEach((eventName) => {
+    window.dispatchEvent(new Event(eventName));
+  });
+}
 
 /**
  * Fuerza a que la siguiente lectura del carrito genere un snapshot nuevo.
@@ -70,6 +81,7 @@ export function saveCart(items: CartItem[]): void {
 
     cachedCartRaw = nextCartRaw;
     cachedCartItems = items;
+    notifyCartUpdated();
   } catch (error) {
     console.error("Error saving cart:", error);
   }
@@ -186,6 +198,7 @@ export function clearCart(): void {
 
   cachedCartRaw = null;
   cachedCartItems = EMPTY_CART;
+  notifyCartUpdated();
 }
 
 /**

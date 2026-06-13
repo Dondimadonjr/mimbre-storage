@@ -93,8 +93,6 @@ async function discountOrderStock(orderId: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('[EMAIL_DEBUG] confirmar route iniciado')
-
     const body: WebpayConfirmRequest = await request.json()
 
     if (!body.token_ws) {
@@ -147,12 +145,6 @@ export async function POST(request: NextRequest) {
     const paymentStatus =
       webpayResponse.responseCode === 0 ? 'pagado' : 'rechazado'
 
-    console.log('[EMAIL_DEBUG] respuesta Webpay', {
-      orderId: payment.order_id,
-      responseCode: webpayResponse.responseCode,
-      status: paymentStatus,
-    })
-
     // Actualizar orden
     const orderUpdate = supabaseAdmin
       .from('orders')
@@ -175,13 +167,6 @@ export async function POST(request: NextRequest) {
       paymentStatus === 'pagado' &&
       currentOrder.status !== 'pagado' &&
       Boolean(updatedOrder)
-
-    console.log('[EMAIL_DEBUG] estado orden', {
-      orderId: payment.order_id,
-      previousPaymentStatus: currentOrder.status,
-      nextPaymentStatus: paymentStatus,
-      shouldSendEmails,
-    })
 
     if (
       paymentStatus === 'pagado' &&
@@ -218,17 +203,7 @@ export async function POST(request: NextRequest) {
       const emailData = await loadOrderEmailData(payment.order_id)
 
       if (emailData) {
-        console.log('[EMAIL_DEBUG] llamando sendOrderPaidEmails', {
-          orderId: payment.order_id,
-          itemsCount: emailData.items?.length ?? 0,
-          customerEmail: emailData.order?.customer_email ?? null,
-        })
-
         await sendOrderPaidEmails(emailData)
-
-        console.log('[EMAIL_DEBUG] sendOrderPaidEmails finalizado', {
-          orderId: payment.order_id,
-        })
       }
     }
 
