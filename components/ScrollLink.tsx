@@ -37,6 +37,17 @@ export default function ScrollLink({
 
     event.preventDefault();
 
+    if (hash === "inicio") {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      window.history.replaceState(null, "", `${targetPath}#${hash}`);
+      onClick?.();
+      return;
+    }
+
     const section = document.getElementById(hash);
 
     if (!section) {

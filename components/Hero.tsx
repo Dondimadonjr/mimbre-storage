@@ -9,7 +9,7 @@ export default function Hero() {
   return (
     <section
       id="inicio"
-      className="bg-cream px-4 pb-10 pt-6 sm:px-6 sm:pb-14 sm:pt-10 lg:px-8 lg:pb-16 lg:pt-14"
+      className="bg-cream px-4 pb-10 pt-3 sm:px-6 sm:pb-14 sm:pt-6 lg:px-8 lg:pb-16 lg:pt-8"
     >
       <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.8fr)] lg:gap-12">
         <div className="max-w-2xl">

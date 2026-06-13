@@ -3,7 +3,6 @@ import Hero from "@/components/Hero";
 import Categories from "@/components/Categories";
 import ProductsGrid from "@/components/ProductsGrid";
 import ArtisanServices from "@/components/ArtisanServices";
-import ScrollLink from "@/components/ScrollLink";
 import AboutSection from "@/components/AboutSection";
 import ContactSection from "@/components/ContactSection";
 
@@ -43,30 +42,9 @@ export default function HomePage() {
       <Hero />
       <Categories />
       <AboutSection />
-      <ServicesMention />
       <ProductsGrid />
       <ArtisanServices />
       <ContactSection />
     </main>
-  );
-}
-
-function ServicesMention() {
-  return (
-    <section className="bg-cream px-4 pb-2 sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-7xl flex-col gap-3 rounded-[1.5rem] border border-border bg-white/78 px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm font-semibold leading-6 text-text-secondary">
-          También realizamos reparaciones, tapizado y trabajos en madera,
-          mimbre y junco.
-        </p>
-
-        <ScrollLink
-          href="/#servicios"
-          className="inline-flex shrink-0 text-sm font-black text-coffee transition hover:text-coffee-dark"
-        >
-          Ver servicios →
-        </ScrollLink>
-      </div>
-    </section>
   );
 }

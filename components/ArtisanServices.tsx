@@ -73,14 +73,14 @@ export default function ArtisanServices() {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            {services.map((service, index) => (
+            {services.map((service) => (
               <article
                 key={service.title}
                 className="group rounded-[1.5rem] border border-white/10 bg-white/[0.045] p-4 transition duration-300 hover:-translate-y-1 hover:border-coffee/40 hover:bg-white/[0.075] sm:rounded-[1.75rem] sm:p-5"
               >
-                <p className="text-xs font-black text-coffee">
-                  {String(index + 1).padStart(2, "0")}
-                </p>
+                <span className="inline-flex rounded-full border border-coffee/30 bg-coffee/12 px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-coffee">
+                  Servicio
+                </span>
 
                 <h3 className="mt-4 text-lg font-black text-white">
                   {service.title}
