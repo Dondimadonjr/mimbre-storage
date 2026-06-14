@@ -187,7 +187,7 @@ export default function AdminProductForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="overflow-visible rounded-[2rem] border border-border bg-white/95 shadow-soft"
+      className="overflow-visible rounded-4xl border border-border bg-white/95 shadow-soft"
     >
       <div className="border-b border-border bg-cream/50 px-5 py-4 sm:px-6">
         <p className="text-xs font-black uppercase tracking-[0.22em] text-coffee">
@@ -216,7 +216,7 @@ export default function AdminProductForm({
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
           <div className="space-y-5">
-            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+            <section className="rounded-3xl border border-border bg-white p-4 shadow-sm">
               <SectionHeader
                 title="Información básica"
                 description="Nombre y descripción visibles en la tienda."
@@ -254,7 +254,7 @@ export default function AdminProductForm({
               </div>
             </section>
 
-            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+            <section className="rounded-3xl border border-border bg-white p-4 shadow-sm">
               <SectionHeader
                 title="Precio y stock"
                 description="Valores usados por el catálogo y el checkout."
@@ -294,7 +294,7 @@ export default function AdminProductForm({
               </div>
             </section>
 
-            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+            <section className="rounded-3xl border border-border bg-white p-4 shadow-sm">
               <SectionHeader
                 title="Categoría"
                 description="Agrupa el producto dentro del catálogo."
@@ -320,7 +320,7 @@ export default function AdminProductForm({
           </div>
 
           <aside className="space-y-5">
-            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+            <section className="rounded-3xl border border-border bg-white p-4 shadow-sm">
               <SectionHeader
                 title="Imagen principal"
                 description="Vista previa y carga de imagen del producto."
@@ -328,7 +328,7 @@ export default function AdminProductForm({
 
               <div className="mt-4">
                 {imagePreview ? (
-                  <div className="relative overflow-hidden rounded-[1.35rem] border border-border bg-gradient-to-br from-cream via-white to-coffee/10">
+                  <div className="relative overflow-hidden rounded-3xl border border-border bg-linear-to-br from-cream via-white to-coffee/10">
                     <Image
                       src={imagePreview}
                       alt="Vista previa"
@@ -362,7 +362,7 @@ export default function AdminProductForm({
               </div>
             </section>
 
-            <section className="rounded-[1.5rem] border border-border bg-white p-4 shadow-sm">
+            <section className="rounded-3xl border border-border bg-white p-4 shadow-sm">
               <SectionHeader
                 title="Estado del producto"
                 description="Controla visibilidad y destaque en tienda."

@@ -1,10 +1,9 @@
 ﻿"use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import ScrollLink from "@/components/ScrollLink";
-
-const footerLinkClass =
-  "inline-flex text-white/62 transition duration-300 hover:-translate-y-0.5 hover:text-coffee";
 
 const navigationLinks = [
   { href: "/#inicio", label: "Inicio" },
@@ -15,10 +14,10 @@ const navigationLinks = [
 ];
 
 const legalLinks = [
-  { href: "/politica-privacidad", label: "Política de Privacidad" },
-  { href: "/terminos", label: "Términos de Servicio" },
-  { href: "/cambios-devoluciones", label: "Cambios y Devoluciones" },
-  { href: "/faq", label: "FAQ" },
+  { href: "/politica-privacidad", label: "Política de privacidad" },
+  { href: "/terminos", label: "Términos de servicio" },
+  { href: "/cambios-devoluciones", label: "Cambios y devoluciones" },
+  { href: "/faq", label: "Preguntas frecuentes" },
 ];
 
 const socialLinks = [
@@ -38,113 +37,179 @@ const socialLinks = [
   },
 ];
 
+const footerLinkClass =
+  "focus-ring inline-flex w-fit rounded-lg text-sm font-semibold text-white/64 transition duration-300 hover:-translate-y-0.5 hover:text-coffee";
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP || "56972086522";
 
   return (
-    <footer className="bg-text-dark px-4 py-10 text-white sm:px-6 lg:px-8 lg:py-14">
+    <footer className="section-reveal bg-[#132119] px-4 py-5 text-white sm:px-6 sm:py-10 lg:px-8 lg:py-14">
       <div className="mx-auto max-w-7xl">
-        <div className="rounded-4xl border border-white/10 bg-white/4.5 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.22)] backdrop-blur sm:p-8 lg:p-10">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.25fr_0.8fr_1fr_1fr]">
-            <div className="space-y-5">
+        <div className="overflow-hidden rounded-[1.65rem] border border-white/10 bg-[radial-gradient(circle_at_0%_0%,rgba(158,104,64,0.24),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.075),rgba(255,255,255,0.025))] shadow-[0_26px_80px_rgba(0,0,0,0.26)] backdrop-blur sm:rounded-[2.25rem]">
+          <div className="grid lg:grid-cols-[1.05fr_1.65fr]">
+            <div className="border-b border-white/10 p-4 sm:p-7 lg:border-b-0 lg:border-r lg:p-8">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-coffee/30 bg-coffee text-xl font-black text-white shadow-[0_16px_34px_rgba(139,94,60,0.28)]">
-                  R
-                </div>
-                <div>
-                  <p className="text-xl font-black leading-tight">
+                <span className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_14px_32px_rgba(139,94,60,0.22)] ring-1 ring-coffee/15 sm:h-13 sm:w-13">
+                  <Image
+                    src="/image/logo.png"
+                    alt="Raíz y Mimbre"
+                    fill
+                    unoptimized
+                    sizes="52px"
+                    className="object-contain object-center p-2"
+                  />
+                </span>
+
+                <div className="min-w-0">
+                  <p className="text-lg font-black leading-tight tracking-[-0.02em] sm:text-2xl">
                     Raíz y Mimbre
                   </p>
-                  <p className="mt-1 text-xs font-bold uppercase tracking-[0.22em] text-coffee">
-                    Hecho a mano
+                  <p className="mt-1 text-[0.66rem] font-black uppercase tracking-[0.22em] text-coffee sm:text-xs">
+                    Artesanía chilena
                   </p>
                 </div>
               </div>
 
-              <p className="max-w-sm text-sm leading-7 text-white/68">
-                Artesanía en mimbre hecha a mano con pasión y diseño premium.
+              <p className="mt-4 max-w-md text-sm leading-6 text-white/68 sm:text-base sm:leading-7">
+                Piezas de mimbre, fibras naturales y trabajos a pedido para
+                espacios cálidos, funcionales y con carácter.
               </p>
-              <p className="max-w-sm text-sm font-semibold leading-7 text-cream/82">
-                Piezas, reparaciones y trabajos a pedido.
-              </p>
-            </div>
 
-            <FooterColumn title="Navegación">
-              {navigationLinks.map((link) => (
-                <li key={link.href}>
-                  <ScrollLink href={link.href} className={footerLinkClass}>
-                    {link.label}
-                  </ScrollLink>
-                </li>
-              ))}
-            </FooterColumn>
-
-            <FooterColumn title="Información">
-              {legalLinks.map((link) => (
-                <li key={link.href}>
-                  <a href={link.href} className={footerLinkClass}>
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </FooterColumn>
-
-            <FooterColumn title="Contacto">
-              <li>
+              <div className="mt-4 grid gap-2 sm:mt-6 sm:grid-cols-2">
                 <a
                   href={`https://wa.me/${whatsappPhone}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={footerLinkClass}
+                  className="focus-ring inline-flex h-11 items-center justify-center rounded-full bg-coffee px-5 text-sm font-black text-white text-center shadow-[0_16px_36px_rgba(139,94,60,0.28)] transition duration-300 hover:-translate-y-0.5 hover:bg-coffee/90 hover:shadow-[0_20px_44px_rgba(139,94,60,0.34)] active:scale-[0.98]"
                 >
-                  WhatsApp: {whatsappPhone}
+                  Consultar por WhatsApp
                 </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:contacto@mimbrestore.cl"
-                  className={footerLinkClass}
+
+                <ScrollLink
+                  href="/#productos"
+                  className="focus-ring inline-flex h-11 items-center justify-center rounded-full border border-white/12 bg-white/7 px-5 text-sm font-black text-white/84 transition duration-300 hover:-translate-y-0.5 hover:bg-white/12 hover:text-white active:scale-[0.98]"
                 >
-                  contacto@mimbrestore.cl
-                </a>
-              </li>
-              <li>
-                <p className="max-w-xs text-sm leading-6 text-white/60">
-                  Respondemos consultas por productos, reparaciones y trabajos a
-                  pedido.
-                </p>
-              </li>
-            </FooterColumn>
-          </div>
+                  Ver productos
+                </ScrollLink>
+              </div>
 
-          <div className="mt-9 border-t border-white/10 pt-6">
-            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-              <p className="text-sm text-white/58">
-                © {currentYear} Raíz y Mimbre. Todos los derechos reservados.
-              </p>
-
-              <div className="flex items-center gap-3">
+              <div className="mt-4 flex items-center gap-2 sm:mt-6">
                 {socialLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={link.label}
-                    className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/6 text-white/70 transition duration-300 hover:-translate-y-0.5 hover:border-coffee/40 hover:bg-coffee hover:text-white"
-                  >
-                    <svg
-                      className="h-5 w-5"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      {link.icon}
-                    </svg>
-                  </a>
+                  <SocialLink key={link.label} {...link} />
                 ))}
               </div>
+            </div>
+
+            <div className="hidden p-7 lg:block lg:p-8">
+              <div className="grid gap-8 md:grid-cols-3">
+                <FooterColumn title="Navegación">
+                  {navigationLinks.map((link) => (
+                    <li key={link.href}>
+                      <ScrollLink href={link.href} className={footerLinkClass}>
+                        {link.label}
+                      </ScrollLink>
+                    </li>
+                  ))}
+                </FooterColumn>
+
+                <FooterColumn title="Información">
+                  {legalLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href} className={footerLinkClass}>
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </FooterColumn>
+
+                <FooterColumn title="Contacto">
+                  <li>
+                    <a
+                      href={`https://wa.me/${whatsappPhone}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={footerLinkClass}
+                    >
+                      WhatsApp: {whatsappPhone}
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="mailto:contacto@mimbrestore.cl"
+                      className={footerLinkClass}
+                    >
+                      contacto@mimbrestore.cl
+                    </a>
+                  </li>
+                  <li>
+                    <p className="max-w-xs text-sm font-medium leading-6 text-white/52">
+                      Respondemos consultas por productos, reparaciones,
+                      restauraciones y trabajos a pedido.
+                    </p>
+                  </li>
+                </FooterColumn>
+              </div>
+
+              <div className="mt-8 rounded-3xl border border-white/10 bg-white/4.5 p-5">
+                <p className="text-sm font-semibold leading-6 text-white/66">
+                  Compra coordinada por WhatsApp, pagos seguros y atención
+                  directa para piezas disponibles o encargos especiales.
+                </p>
+              </div>
+            </div>
+
+            <div className="divide-y divide-white/10 lg:hidden">
+              <MobileFooterSection title="Navegación">
+                {navigationLinks.map((link) => (
+                  <li key={link.href}>
+                    <ScrollLink href={link.href} className={footerLinkClass}>
+                      {link.label}
+                    </ScrollLink>
+                  </li>
+                ))}
+              </MobileFooterSection>
+
+              <MobileFooterSection title="Información">
+                {legalLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className={footerLinkClass}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </MobileFooterSection>
+
+              <MobileFooterSection title="Contacto">
+                <li>
+                  <a
+                    href={`https://wa.me/${whatsappPhone}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={footerLinkClass}
+                  >
+                    WhatsApp: {whatsappPhone}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="mailto:contacto@mimbrestore.cl"
+                    className={footerLinkClass}
+                  >
+                    contacto@mimbrestore.cl
+                  </a>
+                </li>
+              </MobileFooterSection>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 px-4 py-3 sm:px-7 sm:py-5 lg:px-8">
+            <div className="flex flex-col gap-2 text-[0.76rem] font-medium text-white/46 sm:flex-row sm:items-center sm:justify-between sm:text-sm">
+              <p>© {currentYear} Raíz y Mimbre. Todos los derechos reservados.</p>
+              <p className="text-white/34">
+                Hecho a mano · Mimbre · Hogar · Restauración
+              </p>
             </div>
           </div>
         </div>
@@ -162,10 +227,60 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h4 className="text-sm font-black uppercase tracking-[0.2em] text-coffee">
+      <h4 className="text-xs font-black uppercase tracking-[0.22em] text-coffee">
         {title}
       </h4>
-      <ul className="mt-4 space-y-3 text-sm">{children}</ul>
+      <ul className="mt-4 space-y-3">{children}</ul>
     </div>
+  );
+}
+
+function MobileFooterSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <details className="group px-4 py-3">
+      <summary className="focus-ring flex cursor-pointer list-none items-center justify-between gap-4 rounded-xl text-xs font-black uppercase tracking-[0.22em] text-coffee [&::-webkit-details-marker]:hidden">
+        {title}
+        <span className="grid h-7 w-7 place-items-center rounded-full border border-white/10 bg-white/7 text-white/70 transition duration-300 group-open:rotate-45">
+          +
+        </span>
+      </summary>
+
+      <ul className="mt-3 grid gap-2 pb-1">{children}</ul>
+    </details>
+  );
+}
+
+function SocialLink({
+  href,
+  label,
+  icon,
+}: {
+  href: string;
+  label: string;
+  icon: ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="focus-ring grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/7 text-white/70 transition duration-300 hover:-translate-y-0.5 hover:border-coffee/40 hover:bg-coffee hover:text-white active:scale-[0.98] sm:h-10 sm:w-10"
+    >
+      <svg
+        className="h-4.5 w-4.5 sm:h-5 sm:w-5"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        {icon}
+      </svg>
+    </a>
   );
 }

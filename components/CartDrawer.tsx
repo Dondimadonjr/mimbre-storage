@@ -110,7 +110,7 @@ export default function CartDrawer({ onClose }: CartDrawerProps) {
                   key={item.product_id}
                   className="grid grid-cols-[88px_1fr_auto] gap-4 rounded-[1.35rem] border border-border bg-white p-3 shadow-sm"
                 >
-                  <div className="relative h-[88px] w-[88px] overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-cream via-white to-coffee/10">
+                  <div className="relative h-22 w-22 overflow-hidden rounded-2xl border border-border bg-linear-to-br from-cream via-white to-coffee/10">
                     {item.image_url ? (
                       <Image
                         src={item.image_url}

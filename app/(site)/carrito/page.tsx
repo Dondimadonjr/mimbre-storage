@@ -74,7 +74,7 @@ export default function CartPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-cream/80 via-white to-cream/50 py-10 sm:py-14">
+    <main className="min-h-screen bg-linear-to-b from-cream/80 via-white to-cream/50 py-10 sm:py-14">
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col gap-3 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -109,12 +109,12 @@ export default function CartPage() {
                 {items.map((item: CartItem) => (
                   <article
                     key={item.id}
-                    className="overflow-hidden rounded-[2rem] border border-border bg-white p-4 shadow-soft transition hover:border-coffee/20 hover:shadow-[0_20px_50px_rgba(93,58,31,0.1)] sm:p-5"
+                    className="overflow-hidden rounded-4xl border border-border bg-white p-4 shadow-soft transition hover:border-coffee/20 hover:shadow-[0_20px_50px_rgba(93,58,31,0.1)] sm:p-5"
                   >
                     <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
                       <Link
                         href={`/productos/${item.product_id}`}
-                        className="relative h-52 w-full shrink-0 overflow-hidden rounded-[1.35rem] border border-border bg-gradient-to-br from-cream via-white to-coffee/10 sm:h-32 sm:w-32"
+                        className="relative h-52 w-full shrink-0 overflow-hidden rounded-[1.35rem] border border-border bg-linear-to-br from-cream via-white to-coffee/10 sm:h-32 sm:w-32"
                       >
                         {item.image_url ? (
                           <Image
@@ -200,7 +200,7 @@ export default function CartPage() {
               </div>
             </div>
 
-            <aside className="h-fit rounded-[2rem] border border-border bg-white/95 p-6 shadow-soft lg:sticky lg:top-24">
+            <aside className="h-fit rounded-4xl border border-border bg-white/95 p-6 shadow-soft lg:sticky lg:top-24">
               <h2 className="text-2xl font-black text-text-dark">Resumen</h2>
 
               <div className="mt-6 space-y-4 rounded-3xl bg-cream/60 p-5">
@@ -252,7 +252,7 @@ export default function CartPage() {
             </aside>
           </div>
         ) : (
-          <div className="rounded-[2rem] border border-border bg-white px-6 py-20 text-center shadow-soft">
+          <div className="rounded-4xl border border-border bg-white px-6 py-20 text-center shadow-soft">
             <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-cream text-coffee/50 shadow-inner">
               <ShoppingBag className="h-12 w-12" />
             </div>

@@ -53,6 +53,18 @@
   .slide-up {
     animation: slideUp 0.3s ease-in;
   }
+
+  .section-reveal {
+    animation: sectionReveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .focus-ring {
+    outline: none;
+  }
+
+  .focus-ring:focus-visible {
+    box-shadow: 0 0 0 4px rgba(139, 94, 60, 0.18);
+  }
 }
 
 @keyframes fadeIn {
@@ -92,4 +104,30 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #6F472C;
+}
+
+@keyframes sectionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .section-reveal {
+    animation: none;
+  }
 }

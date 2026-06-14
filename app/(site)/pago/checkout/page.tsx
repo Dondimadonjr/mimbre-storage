@@ -227,8 +227,8 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <section className="min-h-[70vh] bg-gradient-to-b from-cream via-white to-cream px-4 py-20">
-        <div className="mx-auto max-w-xl rounded-[2rem] border border-border bg-white/95 p-8 text-center shadow-soft sm:p-10">
+      <section className="min-h-[70vh] bg-linear-to-b from-cream via-white to-cream px-4 py-20">
+        <div className="mx-auto max-w-xl rounded-4xl border border-border bg-white/95 p-8 text-center shadow-soft sm:p-10">
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-coffee/10 text-4xl shadow-inner">
             🧺
           </div>
@@ -253,7 +253,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-cream via-white to-cream px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+    <section className="min-h-screen bg-linear-to-b from-cream via-white to-cream px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       <div className="mx-auto max-w-7xl">
         <Link
           href="/carrito"
@@ -265,7 +265,7 @@ export default function CheckoutPage() {
         <div className="mt-8 grid grid-cols-1 gap-7 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
           <form
             onSubmit={handleSubmit}
-            className="rounded-[2rem] border border-border bg-white/95 p-5 shadow-soft sm:p-8"
+            className="rounded-4xl border border-border bg-white/95 p-5 shadow-soft sm:p-8"
           >
             <p className="text-sm font-bold uppercase tracking-[0.25em] text-coffee">
               Checkout
@@ -421,7 +421,7 @@ export default function CheckoutPage() {
             </div>
           </form>
 
-          <aside className="h-fit rounded-[2rem] border border-border bg-white/95 p-5 shadow-soft sm:p-6 lg:sticky lg:top-24">
+          <aside className="h-fit rounded-4xl border border-border bg-white/95 p-5 shadow-soft sm:p-6 lg:sticky lg:top-24">
             <h2 className="text-2xl font-black text-text-dark">
               Resumen del pedido
             </h2>

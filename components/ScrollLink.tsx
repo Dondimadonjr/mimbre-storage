@@ -12,10 +12,10 @@ type ScrollLinkProps = {
 };
 
 const sectionOffsets: Record<string, number> = {
-  productos: 55,
-  servicios: 110,
-  nosotros: 110,
-  contacto: 100,
+  productos: 82,
+  servicios: 88,
+  nosotros: 88,
+  contacto: 88,
 };
 
 export default function ScrollLink({

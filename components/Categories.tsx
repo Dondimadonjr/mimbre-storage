@@ -31,24 +31,24 @@ const categories = [
 
 export default function Categories() {
   return (
-    <section className="bg-cream/40 px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+    <section className="section-reveal bg-cream/40 px-4 py-7 sm:px-6 sm:py-10 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mx-auto mb-6 max-w-2xl text-center">
-          <p className="inline-flex rounded-full border border-coffee/15 bg-white px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-coffee shadow-sm">
+        <div className="mx-auto mb-5 max-w-2xl text-center sm:mb-6">
+          <p className="inline-flex rounded-full border border-coffee/15 bg-white px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-coffee shadow-sm sm:px-4 sm:py-2 sm:text-[11px]">
             Categorías
           </p>
 
-          <h2 className="mt-3 text-2xl font-black leading-tight text-text-dark sm:text-3xl">
+          <h2 className="mt-3 text-[1.65rem] font-black leading-tight text-text-dark sm:text-3xl">
             Explora por tipo de producto
           </h2>
 
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-text-secondary">
+          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-text-secondary sm:mt-3">
             Encuentra piezas de mimbre pensadas para decorar, ordenar y dar un
             toque natural a tu hogar.
           </p>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
           {categories.map((category) => (
             <button
               key={category.name}
@@ -64,16 +64,16 @@ export default function Categories() {
                   .getElementById("productos")
                   ?.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
-              className="group text-left rounded-2xl border border-border bg-white/90 p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-coffee/25 hover:bg-white hover:shadow-[0_16px_34px_rgba(93,58,31,0.11)]"
+              className="focus-ring group rounded-2xl border border-border bg-white/90 p-3 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-coffee/30 hover:bg-white hover:shadow-[0_18px_40px_rgba(93,58,31,0.13)] active:scale-[0.99] sm:p-4"
             >
-              <div className="flex items-start gap-3">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-coffee/10 bg-cream shadow-sm transition group-hover:border-coffee/25 group-hover:bg-white">
+              <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start sm:gap-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-coffee/10 bg-cream shadow-sm transition duration-300 group-hover:scale-105 group-hover:border-coffee/25 group-hover:bg-white sm:h-14 sm:w-14">
                   <Image
                     src={category.iconSrc}
                     alt=""
                     width={40}
                     height={40}
-                    className="h-10 w-10 object-contain transition duration-300 group-hover:scale-110"
+                    className="h-9 w-9 object-contain transition duration-300 group-hover:scale-110 sm:h-10 sm:w-10"
                   />
                 </div>
 
@@ -82,13 +82,13 @@ export default function Categories() {
                     {category.name}
                   </h3>
 
-                  <p className="mt-1 text-sm leading-5 text-text-secondary">
+                  <p className="mt-1 text-xs leading-5 text-text-secondary sm:text-sm">
                     {category.description}
                   </p>
                 </div>
               </div>
 
-              <span className="mt-3 inline-flex text-sm font-black text-coffee transition group-hover:translate-x-1">
+              <span className="mt-2 inline-flex text-xs font-black text-coffee transition duration-300 group-hover:translate-x-1 sm:mt-3 sm:text-sm">
                 Ver productos →
               </span>
             </button>

@@ -72,25 +72,25 @@ export default function Header() {
       <header
         className={`fixed left-0 right-0 top-0 z-50 border-b px-3 transition-[background-color,box-shadow,backdrop-filter,padding] duration-500 sm:px-4 ${
           scrolled
-            ? "border-coffee/10 bg-cream/92 py-2 shadow-[0_12px_36px_rgba(93,58,31,0.09)] backdrop-blur-xl"
-            : "border-coffee/0 bg-cream/76 py-4 shadow-none backdrop-blur-md"
+            ? "border-coffee/10 bg-cream/92 py-1 shadow-[0_12px_36px_rgba(93,58,31,0.09)] backdrop-blur-xl sm:py-2"
+            : "border-coffee/0 bg-cream/76 py-1.5 shadow-none backdrop-blur-md sm:py-4"
         }`}
       >
         <nav
           className={`mx-auto flex max-w-7xl items-center justify-between transition-[height] duration-500 ${
-            scrolled ? "h-14.5" : "h-19"
+            scrolled ? "h-12 sm:h-14.5" : "h-13 sm:h-19"
           }`}
         >
           {/* Logo */}
           <ScrollLink
             href="/#inicio"
             onClick={closeMenu}
-            className="group flex min-w-0 items-center gap-3 transition duration-300 hover:-translate-y-0.5"
+            className="focus-ring group flex min-w-0 items-center gap-3 rounded-2xl transition duration-300 hover:-translate-y-0.5"
             aria-label="Ir al inicio"
           >
             <span
               className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_10px_25px_rgba(139,94,60,0.18)] ring-1 ring-coffee/10 transition duration-300 group-hover:scale-105 ${
-                scrolled ? "h-10 w-10" : "h-12 w-12"
+                scrolled ? "h-8 w-8 sm:h-10 sm:w-10" : "h-9 w-9 sm:h-12 sm:w-12"
               }`}
             >
               <Image
@@ -107,7 +107,7 @@ export default function Header() {
             <span className="flex flex-col leading-none">
               <span
                 className={`font-black tracking-tight text-text-dark transition-all duration-300 ${
-                  scrolled ? "text-lg" : "text-xl"
+                  scrolled ? "text-base sm:text-lg" : "text-[1.05rem] sm:text-xl"
                 }`}
               >
                 Raíz y Mimbre
@@ -128,7 +128,7 @@ export default function Header() {
               <ScrollLink
                 key={link.href}
                 href={link.href}
-                className="group relative rounded-full px-3.5 py-2.5 text-sm font-semibold text-text-secondary transition duration-300 hover:bg-white hover:text-coffee hover:shadow-sm lg:px-5"
+                className="focus-ring group relative rounded-full px-3.5 py-2.5 text-sm font-semibold text-text-secondary transition duration-300 hover:bg-white hover:text-coffee hover:shadow-sm lg:px-5"
               >
                 <span>{link.label}</span>
                 <span className="absolute bottom-1.5 left-1/2 h-px w-0 -translate-x-1/2 bg-coffee transition-all duration-300 group-hover:w-5" />
@@ -142,7 +142,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setCartOpen(true)}
-              className="group relative flex h-11 w-11 items-center justify-center rounded-2xl border border-coffee/15 bg-white/66 text-coffee shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-coffee-dark hover:shadow-[0_12px_30px_rgba(139,94,60,0.18)] active:scale-95"
+              className="focus-ring group relative flex h-9 w-9 items-center justify-center rounded-2xl border border-coffee/15 bg-white/66 text-coffee shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-coffee-dark hover:shadow-[0_12px_30px_rgba(139,94,60,0.18)] active:scale-95 sm:h-11 sm:w-11"
               aria-label="Abrir carrito de compras"
             >
               <svg
@@ -171,7 +171,7 @@ export default function Header() {
             <button
                 type="button"
                 onClick={() => setMenuOpen((current) => !current)}
-                className="group flex h-11 w-11 items-center justify-center rounded-2xl border border-coffee/15 bg-white/66 text-text-dark shadow-sm transition duration-300 hover:bg-white active:scale-95 md:hidden"
+                className="focus-ring group flex h-9 w-9 items-center justify-center rounded-2xl border border-coffee/15 bg-white/66 text-text-dark shadow-sm transition duration-300 hover:bg-white active:scale-95 sm:h-11 sm:w-11 md:hidden"
                 aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
                 aria-expanded={menuOpen}
                 aria-controls="menu-mobile"
@@ -204,13 +204,13 @@ export default function Header() {
             menuOpen ? "max-h-105 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="mt-2 rounded-[1.75rem] border border-coffee/10 bg-cream/96 p-2 shadow-[0_22px_55px_rgba(93,58,31,0.12)] backdrop-blur-xl">
+          <div className="mt-1.5 rounded-[1.35rem] border border-coffee/10 bg-cream/96 p-1.5 shadow-[0_18px_42px_rgba(93,58,31,0.11)] backdrop-blur-xl sm:mt-2 sm:rounded-[1.75rem] sm:p-2">
             {navLinks.map((link) => (
               <ScrollLink
                 key={link.href}
                 href={link.href}
                 onClick={closeMenu}
-                className="flex items-center justify-between rounded-2xl px-4 py-3 text-base font-bold text-text-secondary transition duration-300 hover:bg-white hover:text-coffee"
+                className="focus-ring flex items-center justify-between rounded-2xl px-4 py-2 text-sm font-bold text-text-secondary transition duration-300 hover:bg-white hover:text-coffee sm:py-3 sm:text-base"
               >
                 <span>{link.label}</span>
                 <span className="text-coffee">→</span>
@@ -221,7 +221,7 @@ export default function Header() {
               href={`https://wa.me/${whatsappPhone}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 flex justify-center rounded-2xl bg-coffee px-4 py-3 text-sm font-black text-white shadow-[0_12px_24px_rgba(139,94,60,0.22)] transition hover:bg-coffee-dark active:scale-[0.98]"
+              className="focus-ring mt-1.5 flex justify-center rounded-2xl bg-coffee px-4 py-2.5 text-sm font-black text-white shadow-[0_12px_24px_rgba(139,94,60,0.22)] transition hover:bg-coffee-dark active:scale-[0.98] sm:mt-2 sm:py-3"
               onClick={closeMenu}
             >
               Comprar por WhatsApp
@@ -232,7 +232,7 @@ export default function Header() {
 
       {cartOpen && <CartDrawer onClose={() => setCartOpen(false)} />}
 
-      <div className="h-23" />
+      <div className="h-16 sm:h-23" />
     </>
   );
 }
