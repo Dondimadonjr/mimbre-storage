@@ -47,45 +47,41 @@ function getFromAddress() {
 function renderItemsTable(items: OrderItem[]) {
   if (items.length === 0) {
     return `
-      <p style="margin:0;color:#6f6257;font-size:14px;">
+      <p style="margin:0;color:#6f6257;font-size:15px;line-height:1.5;overflow-wrap:break-word;">
         No hay productos asociados a esta orden.
       </p>
     `;
   }
 
   return `
-    <table style="width:100%;border-collapse:collapse;font-size:14px;">
-      <thead>
-        <tr>
-          <th align="left" style="padding:10px 0;border-bottom:1px solid #eadfce;color:#6f6257;">Producto</th>
-          <th align="center" style="padding:10px 0;border-bottom:1px solid #eadfce;color:#6f6257;">Cant.</th>
-          <th align="right" style="padding:10px 0;border-bottom:1px solid #eadfce;color:#6f6257;">Unitario</th>
-          <th align="right" style="padding:10px 0;border-bottom:1px solid #eadfce;color:#6f6257;">Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${items
-          .map(
-            (item) => `
-              <tr>
-                <td style="padding:12px 0;border-bottom:1px solid #f2eadf;color:#1f2a1f;font-weight:700;">
-                  ${escapeHtml(item.product_name)}
-                </td>
-                <td align="center" style="padding:12px 0;border-bottom:1px solid #f2eadf;color:#1f2a1f;">
+    <div style="width:100%;box-sizing:border-box;">
+      ${items
+        .map(
+          (item) => `
+            <div style="width:100%;box-sizing:border-box;margin:0 0 12px;padding:14px;border:1px solid #eadfce;border-radius:16px;background:#fffaf3;">
+              <p style="margin:0 0 10px;color:#1f2a1f;font-size:16px;line-height:1.35;font-weight:800;overflow-wrap:break-word;word-break:break-word;">
+                ${escapeHtml(item.product_name)}
+              </p>
+
+              <div style="width:100%;box-sizing:border-box;border-top:1px solid #f2eadf;padding-top:10px;">
+                <p style="margin:0 0 7px;color:#6f6257;font-size:14px;line-height:1.45;">
+                  <strong style="display:inline-block;min-width:112px;color:#1f2a1f;">Cantidad:</strong>
                   ${escapeHtml(item.quantity)}
-                </td>
-                <td align="right" style="padding:12px 0;border-bottom:1px solid #f2eadf;color:#1f2a1f;">
+                </p>
+                <p style="margin:0 0 7px;color:#6f6257;font-size:14px;line-height:1.45;">
+                  <strong style="display:inline-block;min-width:112px;color:#1f2a1f;">Precio unitario:</strong>
                   ${escapeHtml(formatCurrency(item.unit_price))}
-                </td>
-                <td align="right" style="padding:12px 0;border-bottom:1px solid #f2eadf;color:#9a663d;font-weight:800;">
+                </p>
+                <p style="margin:0;color:#9a663d;font-size:15px;line-height:1.45;font-weight:800;">
+                  <strong style="display:inline-block;min-width:112px;color:#1f2a1f;">Subtotal:</strong>
                   ${escapeHtml(formatCurrency(item.subtotal))}
-                </td>
-              </tr>
-            `
-          )
-          .join("")}
-      </tbody>
-    </table>
+                </p>
+              </div>
+            </div>
+          `
+        )
+        .join("")}
+    </div>
   `;
 }
 
@@ -101,22 +97,30 @@ function renderEmailShell({
   children: string;
 }) {
   return `
-    <div style="margin:0;padding:0;background:#FAF6F0;font-family:Arial,Helvetica,sans-serif;color:#1f2a1f;">
-      <div style="max-width:640px;margin:0 auto;padding:28px 16px;">
-        <div style="border-radius:24px;background:#ffffff;border:1px solid #eadfce;overflow:hidden;">
-          <div style="background:#2E3B1F;padding:26px 28px;color:#ffffff;">
+    <div style="margin:0;padding:0;background:#FAF6F0;font-family:Arial,Helvetica,sans-serif;color:#1f2a1f;-webkit-text-size-adjust:100%;text-size-adjust:100%;">
+      <div style="width:100%;max-width:600px;margin:0 auto;padding:18px 12px;box-sizing:border-box;">
+        <div style="width:100%;box-sizing:border-box;border-radius:22px;background:#ffffff;border:1px solid #eadfce;overflow:hidden;">
+          <div style="background:#1f2a1f;padding:22px 20px;color:#ffffff;">
+            <p style="margin:0 0 10px;font-size:15px;line-height:1.2;color:#ffffff;font-weight:900;">
+              Raíz y Mimbre
+            </p>
             <p style="margin:0 0 8px;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#d8b48a;font-weight:800;">
               ${escapeHtml(eyebrow)}
             </p>
-            <h1 style="margin:0;font-size:28px;line-height:1.15;color:#ffffff;">
+            <h1 style="margin:0;font-size:26px;line-height:1.15;color:#ffffff;font-weight:900;">
               ${escapeHtml(title)}
             </h1>
             <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:#f7efe5;">
               ${escapeHtml(intro)}
             </p>
           </div>
-          <div style="padding:28px;">
+          <div style="padding:20px;box-sizing:border-box;">
             ${children}
+          </div>
+          <div style="border-top:1px solid #eadfce;background:#fffaf3;padding:16px 20px;box-sizing:border-box;">
+            <p style="margin:0;color:#6f6257;font-size:13px;line-height:1.5;">
+              Raíz y Mimbre · Artesanía en mimbre, madera y fibras naturales.
+            </p>
           </div>
         </div>
       </div>
@@ -133,37 +137,39 @@ function buildOwnerHtml(order: Order, items: OrderItem[]) {
     intro:
       "Webpay confirmó un pago aprobado. Revisa el detalle del pedido y coordina entrega o retiro con el cliente.",
     children: `
-      <div style="display:block;border-radius:18px;background:#FAF6F0;padding:18px;margin-bottom:22px;">
+      <div style="display:block;width:100%;box-sizing:border-box;border-radius:18px;background:#FAF6F0;padding:16px;margin-bottom:20px;">
         <p style="margin:0 0 8px;color:#6f6257;font-size:13px;">Pedido</p>
-        <p style="margin:0;font-size:22px;font-weight:800;color:#1f2a1f;">#${escapeHtml(
+        <p style="margin:0;font-size:22px;line-height:1.2;font-weight:800;color:#1f2a1f;overflow-wrap:break-word;">#${escapeHtml(
           order.id.slice(0, 8)
         )}</p>
-        <p style="margin:8px 0 0;color:#9a663d;font-size:20px;font-weight:800;">${escapeHtml(
+        <p style="margin:8px 0 0;color:#9a663d;font-size:32px;line-height:1;font-weight:900;">${escapeHtml(
           formatCurrency(order.total)
         )}</p>
       </div>
 
-      <h2 style="margin:0 0 12px;font-size:16px;color:#1f2a1f;">Cliente</h2>
-      <p style="margin:0 0 6px;color:#1f2a1f;"><strong>Nombre:</strong> ${escapeHtml(
-        order.customer_name
-      )}</p>
-      <p style="margin:0 0 6px;color:#1f2a1f;"><strong>Email:</strong> ${escapeHtml(
-        order.customer_email
-      )}</p>
-      <p style="margin:0 0 6px;color:#1f2a1f;"><strong>Teléfono:</strong> ${escapeHtml(
-        order.customer_phone || "No informado"
-      )}</p>
-      <p style="margin:0 0 6px;color:#1f2a1f;"><strong>Dirección:</strong> ${escapeHtml(
-        address || "No informada"
-      )}</p>
-      <p style="margin:0 0 22px;color:#1f2a1f;"><strong>Fecha:</strong> ${escapeHtml(
-        formatDate(order.created_at)
-      )}</p>
+      <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Cliente</h2>
+      <div style="margin:0 0 22px;width:100%;box-sizing:border-box;">
+        <p style="margin:0 0 7px;color:#1f2a1f;font-size:15px;line-height:1.5;overflow-wrap:break-word;"><strong>Nombre:</strong> ${escapeHtml(
+          order.customer_name
+        )}</p>
+        <p style="margin:0 0 7px;color:#1f2a1f;font-size:15px;line-height:1.5;overflow-wrap:break-word;"><strong>Email:</strong> ${escapeHtml(
+          order.customer_email
+        )}</p>
+        <p style="margin:0 0 7px;color:#1f2a1f;font-size:15px;line-height:1.5;overflow-wrap:break-word;"><strong>Teléfono:</strong> ${escapeHtml(
+          order.customer_phone || "No informado"
+        )}</p>
+        <p style="margin:0 0 7px;color:#1f2a1f;font-size:15px;line-height:1.5;overflow-wrap:break-word;"><strong>Dirección:</strong> ${escapeHtml(
+          address || "No informada"
+        )}</p>
+        <p style="margin:0;color:#1f2a1f;font-size:15px;line-height:1.5;"><strong>Fecha:</strong> ${escapeHtml(
+          formatDate(order.created_at)
+        )}</p>
+      </div>
 
-      <h2 style="margin:0 0 12px;font-size:16px;color:#1f2a1f;">Productos</h2>
+      <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Productos comprados</h2>
       ${renderItemsTable(items)}
 
-      <p style="margin:24px 0 0;border-radius:16px;background:#FAF6F0;padding:16px;color:#6f6257;line-height:1.6;">
+      <p style="margin:22px 0 0;border-radius:16px;background:#FAF6F0;padding:16px;color:#6f6257;font-size:15px;line-height:1.6;">
         Revisa el pedido en el panel de administración y coordina entrega o retiro con el cliente.
       </p>
     `,
@@ -176,22 +182,22 @@ function buildCustomerHtml(order: Order, items: OrderItem[]) {
     title: "Recibimos tu compra en Raíz y Mimbre",
     intro: `Hola ${order.customer_name || ""}, tu pago fue aprobado correctamente.`,
     children: `
-      <div style="border-radius:18px;background:#FAF6F0;padding:18px;margin-bottom:22px;">
+      <div style="width:100%;box-sizing:border-box;border-radius:18px;background:#FAF6F0;padding:16px;margin-bottom:20px;">
         <p style="margin:0 0 8px;color:#6f6257;font-size:13px;">Pedido #${escapeHtml(
           order.id.slice(0, 8)
         )}</p>
-        <p style="margin:0;color:#9a663d;font-size:24px;font-weight:800;">${escapeHtml(
+        <p style="margin:0;color:#9a663d;font-size:34px;line-height:1;font-weight:900;">${escapeHtml(
           formatCurrency(order.total)
         )}</p>
       </div>
 
-      <h2 style="margin:0 0 12px;font-size:16px;color:#1f2a1f;">Productos comprados</h2>
+      <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Productos comprados</h2>
       ${renderItemsTable(items)}
 
-      <p style="margin:24px 0 0;color:#1f2a1f;line-height:1.7;">
+      <p style="margin:22px 0 0;color:#1f2a1f;font-size:15px;line-height:1.7;">
         Nos contactaremos contigo para coordinar despacho, retiro o detalles de entrega.
       </p>
-      <p style="margin:14px 0 0;color:#1f2a1f;font-weight:800;">
+      <p style="margin:14px 0 0;color:#1f2a1f;font-size:15px;font-weight:800;line-height:1.5;">
         Gracias por apoyar el trabajo artesanal.
       </p>
     `,
