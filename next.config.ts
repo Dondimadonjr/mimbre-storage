@@ -23,7 +23,7 @@ const csp = [
   "form-action 'self'",
   `script-src ${scriptSrc}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https:",
+  `img-src 'self' data: blob: https://${supabaseHostname}`,
   "font-src 'self' data:",
   `connect-src 'self' https://${supabaseHostname} wss://${supabaseHostname}`,
   !isDev ? "upgrade-insecure-requests" : "",
