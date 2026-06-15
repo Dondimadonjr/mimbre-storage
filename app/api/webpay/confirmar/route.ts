@@ -4,14 +4,14 @@ import { sendOrderPaidEmails } from '@/lib/emails/orderEmails'
 import { confirmWebpayTransaction } from '@/lib/webpay'
 import type { Order, OrderItem, WebpayConfirmRequest } from '@/types/order'
 
-type OrderItemStockData = {
-  product_id: string
-  quantity: number
-}
-
-type ProductStockData = {
-  id: string
-  stock: number
+type ConfirmPaidOrderRpcResult = {
+  success: boolean
+  message: string
+  order_id: string
+  previous_status: string
+  new_status: string
+  items_count: number
+  discounted_items: number
 }
 
 async function loadOrderEmailData(orderId: string) {
@@ -40,54 +40,6 @@ async function loadOrderEmailData(orderId: string) {
   return {
     order,
     items: items || [],
-  }
-}
-
-async function discountOrderStock(orderId: string) {
-  const { data: orderItems, error: itemsError } = await supabaseAdmin
-    .from('order_items')
-    .select('product_id, quantity')
-    .eq('order_id', orderId)
-    .returns<OrderItemStockData[]>()
-
-  if (itemsError) {
-    console.error('Error loading order items for stock discount:', itemsError)
-    return
-  }
-
-  if (!orderItems || orderItems.length === 0) {
-    console.error('No order items found for stock discount:', { orderId })
-    return
-  }
-
-  for (const item of orderItems) {
-    const { data: product, error: productError } = await supabaseAdmin
-      .from('products')
-      .select('id, stock')
-      .eq('id', item.product_id)
-      .maybeSingle<ProductStockData>()
-
-    if (productError || !product) {
-      console.error('Error loading product for stock discount:', {
-        productId: item.product_id,
-        error: productError,
-      })
-      continue
-    }
-
-    const nextStock = Math.max(Number(product.stock) - Number(item.quantity), 0)
-
-    const { error: updateStockError } = await supabaseAdmin
-      .from('products')
-      .update({ stock: nextStock })
-      .eq('id', product.id)
-
-    if (updateStockError) {
-      console.error('Error updating product stock after payment:', {
-        productId: product.id,
-        error: updateStockError,
-      })
-    }
   }
 }
 
@@ -145,37 +97,6 @@ export async function POST(request: NextRequest) {
     const paymentStatus =
       webpayResponse.responseCode === 0 ? 'pagado' : 'rechazado'
 
-    // Actualizar orden
-    const orderUpdate = supabaseAdmin
-      .from('orders')
-      .update({ status: paymentStatus })
-      .eq('id', payment.order_id)
-
-    if (paymentStatus === 'pagado') {
-      orderUpdate.neq('status', 'pagado')
-    }
-
-    const { data: updatedOrder, error: orderError } = await orderUpdate
-      .select('id, status')
-      .maybeSingle()
-
-    if (orderError) {
-      console.error('Error updating order:', orderError)
-    }
-
-    const shouldSendEmails =
-      paymentStatus === 'pagado' &&
-      currentOrder.status !== 'pagado' &&
-      Boolean(updatedOrder)
-
-    if (
-      paymentStatus === 'pagado' &&
-      currentOrder.status !== 'pagado' &&
-      updatedOrder
-    ) {
-      await discountOrderStock(payment.order_id)
-    }
-
     // Actualizar pago
     const { error: updateError } = await supabaseAdmin
       .from('payments')
@@ -197,9 +118,78 @@ export async function POST(request: NextRequest) {
       console.error('Error updating payment:', updateError)
     }
 
-    if (
-      shouldSendEmails
-    ) {
+    if (paymentStatus === 'rechazado') {
+      const { error: orderError } = await supabaseAdmin
+        .from('orders')
+        .update({ status: paymentStatus })
+        .eq('id', payment.order_id)
+        .neq('status', 'pagado')
+
+      if (orderError) {
+        console.error('Error updating rejected order:', orderError)
+      }
+
+      return NextResponse.json({
+        orderId: payment.order_id,
+        status: paymentStatus,
+        message: 'El pago fue rechazado',
+        responseCode: webpayResponse.responseCode,
+      })
+    }
+
+    const { data: rpcData, error: rpcError } = await supabaseAdmin.rpc(
+      'confirm_paid_order_and_discount_stock',
+      { p_order_id: currentOrder.id }
+    )
+
+    if (rpcError) {
+      console.error('Error confirming paid order with stock RPC:', {
+        orderId: currentOrder.id,
+        message: rpcError.message,
+        code: rpcError.code,
+      })
+
+      return NextResponse.json(
+        {
+          orderId: payment.order_id,
+          status: 'error',
+          message:
+            'El pago fue aprobado, pero no se pudo confirmar el stock del pedido. Te contactaremos para resolverlo.',
+          responseCode: webpayResponse.responseCode,
+        },
+        { status: 500 }
+      )
+    }
+
+    const rpcResult = Array.isArray(rpcData)
+      ? (rpcData[0] as ConfirmPaidOrderRpcResult | undefined)
+      : (rpcData as ConfirmPaidOrderRpcResult | null)
+
+    if (!rpcResult?.success) {
+      console.error('Paid order stock RPC returned unsuccessful result:', {
+        orderId: currentOrder.id,
+        message: rpcResult?.message,
+        previousStatus: rpcResult?.previous_status,
+        newStatus: rpcResult?.new_status,
+      })
+
+      return NextResponse.json(
+        {
+          orderId: payment.order_id,
+          status: 'error',
+          message:
+            'El pago fue aprobado, pero hubo un problema al confirmar el stock del pedido. Te contactaremos para resolverlo.',
+          responseCode: webpayResponse.responseCode,
+        },
+        { status: 409 }
+      )
+    }
+
+    const shouldSendEmails =
+      rpcResult.previous_status !== 'pagado' &&
+      rpcResult.new_status === 'pagado'
+
+    if (shouldSendEmails) {
       const emailData = await loadOrderEmailData(payment.order_id)
 
       if (emailData) {
@@ -211,9 +201,9 @@ export async function POST(request: NextRequest) {
       orderId: payment.order_id,
       status: paymentStatus,
       message:
-        paymentStatus === 'pagado'
-          ? 'Pago realizado exitosamente'
-          : 'El pago fue rechazado',
+        rpcResult.previous_status === 'pagado'
+          ? 'Pago ya confirmado'
+          : 'Pago realizado exitosamente',
       responseCode: webpayResponse.responseCode,
     })
   } catch (error) {
