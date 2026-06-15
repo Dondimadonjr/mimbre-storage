@@ -37,8 +37,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   const handleWhatsApp = () => {
-    const phone = process.env.NEXT_PUBLIC_WHATSAPP;
-    if (!phone) return;
+    const phone = process.env.NEXT_PUBLIC_WHATSAPP || "56972086522";
 
     const message = `Hola, me interesa este producto: ${product.name}`;
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;

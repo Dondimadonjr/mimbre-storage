@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
       returnUrl
     )
 
-    await supabaseAdmin.from('payments').insert([
+    const { error: paymentError } = await supabaseAdmin.from('payments').insert([
       {
         order_id: order.id,
         token: webpayResponse.token,
@@ -191,6 +191,32 @@ export async function POST(request: NextRequest) {
         status: 'pendiente',
       },
     ])
+
+    if (paymentError) {
+      console.error('Error creating payment record:', {
+        orderId: order.id,
+        buyOrder,
+        error: paymentError.message,
+      })
+
+      const { error: cancelOrderError } = await supabaseAdmin
+        .from('orders')
+        .update({ status: 'cancelado' })
+        .eq('id', order.id)
+
+      if (cancelOrderError) {
+        console.error('Error marking order as cancelled after payment insert failure:', {
+          orderId: order.id,
+          buyOrder,
+          error: cancelOrderError.message,
+        })
+      }
+
+      return NextResponse.json(
+        { message: 'Error al registrar el pago. Intenta nuevamente.' },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json({
       url: webpayResponse.url,
