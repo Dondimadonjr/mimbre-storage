@@ -2,9 +2,6 @@ import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV !== "production";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://mimbre-storage.vercel.app";
-
 const supabaseHostname = "nydvvouuqpmuovqzceak.supabase.co";
 
 const scriptSrc = [
@@ -55,10 +52,6 @@ const securityHeaders = [
   {
     key: "Strict-Transport-Security",
     value: "max-age=63072000; includeSubDomains; preload",
-  },
-  {
-    key: "Access-Control-Allow-Origin",
-    value: siteUrl,
   },
 ];
 
