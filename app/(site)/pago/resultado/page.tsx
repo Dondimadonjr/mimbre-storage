@@ -34,17 +34,17 @@ export default async function PaymentResultPage({
   let isPaidOrder = false;
 
   if (status === "success" && orderId) {
-  const { data: order } = await supabaseAdmin
-    .from("orders")
-    .select("id, status")
-    .eq("id", orderId)
-    .maybeSingle();
+    const { data: order } = await supabaseAdmin
+      .from("orders")
+      .select("id, status")
+      .eq("id", orderId)
+      .maybeSingle();
 
-  const { data: payment } = await supabaseAdmin
-    .from("payments")
-    .select("id, order_id, status, response_code")
-    .eq("order_id", orderId)
-    .maybeSingle();
+    const { data: payment } = await supabaseAdmin
+      .from("payments")
+      .select("id, order_id, status, response_code")
+      .eq("order_id", orderId)
+      .maybeSingle();
 
     const orderStatus = String(order?.status ?? "").trim().toLowerCase();
     const paymentStatus = String(payment?.status ?? "").trim().toLowerCase();
@@ -64,31 +64,31 @@ export default async function PaymentResultPage({
           </div>
 
           <h1 className="mt-8 text-3xl font-bold text-text-dark">
-            ¡Compra Exitosa!
+            ¡Compra exitosa!
           </h1>
 
           <p className="mt-5 text-lg leading-relaxed text-text-secondary">
-            Tu pago ha sido procesado correctamente. Pronto recibirás un email
-            de confirmación.
+            Tu pago ha sido procesado correctamente. Guardamos tu pedido y, si
+            corresponde, recibirás la confirmación en tu correo.
           </p>
 
           <div className="mt-8 rounded-2xl bg-cream p-5 text-left">
-            <p className="text-sm text-text-secondary">Número de Orden:</p>
-            <p className="mt-2 font-mono font-bold text-text-dark">
+            <p className="text-sm text-text-secondary">Número de orden:</p>
+            <p className="mt-2 break-all font-mono font-bold text-text-dark">
               {orderId}
             </p>
           </div>
 
           <p className="mt-8 text-text-secondary">
-            Nos comunicaremos contigo pronto para coordinar el envío de tu
-            pedido.
+            Nos comunicaremos contigo pronto para coordinar el envío o retiro de
+            tu pedido.
           </p>
 
           <Link
             href="/"
             className="mt-8 inline-flex w-full justify-center rounded-full bg-coffee px-6 py-4 font-bold text-white transition hover:bg-coffee-dark"
           >
-            Volver al Inicio
+            Volver al inicio
           </Link>
         </div>
       </section>
@@ -103,7 +103,7 @@ export default async function PaymentResultPage({
         </div>
 
         <h1 className="mt-8 text-3xl font-bold text-text-dark">
-          Pago No Procesado
+          Pago no procesado
         </h1>
 
         <p className="mt-5 text-lg leading-relaxed text-text-secondary">
@@ -115,14 +115,14 @@ export default async function PaymentResultPage({
             href="/carrito"
             className="inline-flex w-full justify-center rounded-full bg-coffee px-6 py-4 font-bold text-white transition hover:bg-coffee-dark"
           >
-            Volver al Carrito
+            Volver al carrito
           </Link>
 
           <Link
             href="/"
             className="inline-flex w-full justify-center rounded-full border border-coffee px-6 py-4 font-bold text-coffee transition hover:bg-coffee hover:text-white"
           >
-            Ir al Inicio
+            Ir al inicio
           </Link>
         </div>
       </div>
