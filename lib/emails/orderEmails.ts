@@ -25,6 +25,10 @@ function formatDate(date: string) {
   }).format(new Date(date));
 }
 
+function getOrderCode(order: Order) {
+  return order.id.slice(0, 8).toUpperCase();
+}
+
 function getAddress(order: Order) {
   return [
     order.customer_address,
@@ -42,6 +46,15 @@ function getFromAddress() {
   if (!fromName || !fromAddress) return null;
 
   return `${fromName} <${fromAddress}>`;
+}
+
+function renderInfoRow(label: string, value: string | number | null | undefined) {
+  return `
+    <p style="margin:0 0 8px;color:#1f2a1f;font-size:15px;line-height:1.5;overflow-wrap:break-word;">
+      <strong style="color:#1f2a1f;">${escapeHtml(label)}:</strong>
+      ${escapeHtml(value || "No informado")}
+    </p>
+  `;
 }
 
 function renderItemsTable(items: OrderItem[]) {
@@ -98,10 +111,10 @@ function renderEmailShell({
 }) {
   return `
     <div style="margin:0;padding:0;background:#FAF6F0;font-family:Arial,Helvetica,sans-serif;color:#1f2a1f;-webkit-text-size-adjust:100%;text-size-adjust:100%;">
-      <div style="width:100%;max-width:600px;margin:0 auto;padding:18px 12px;box-sizing:border-box;">
-        <div style="width:100%;box-sizing:border-box;border-radius:22px;background:#ffffff;border:1px solid #eadfce;overflow:hidden;">
-          <div style="background:#1f2a1f;padding:22px 20px;color:#ffffff;">
-            <p style="margin:0 0 10px;font-size:15px;line-height:1.2;color:#ffffff;font-weight:900;">
+      <div style="width:100%;max-width:620px;margin:0 auto;padding:18px 12px;box-sizing:border-box;">
+        <div style="width:100%;box-sizing:border-box;border-radius:24px;background:#ffffff;border:1px solid #eadfce;overflow:hidden;">
+          <div style="background:#1f2a1f;padding:24px 20px;color:#ffffff;">
+            <p style="margin:0 0 10px;font-size:16px;line-height:1.2;color:#ffffff;font-weight:900;">
               Raíz y Mimbre
             </p>
             <p style="margin:0 0 8px;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#d8b48a;font-weight:800;">
@@ -114,12 +127,17 @@ function renderEmailShell({
               ${escapeHtml(intro)}
             </p>
           </div>
+
           <div style="padding:20px;box-sizing:border-box;">
             ${children}
           </div>
+
           <div style="border-top:1px solid #eadfce;background:#fffaf3;padding:16px 20px;box-sizing:border-box;">
+            <p style="margin:0 0 6px;color:#1f2a1f;font-size:13px;line-height:1.5;font-weight:800;">
+              Raíz y Mimbre
+            </p>
             <p style="margin:0;color:#6f6257;font-size:13px;line-height:1.5;">
-              Raíz y Mimbre · Artesanía en mimbre, madera y fibras naturales.
+              Artesanía en mimbre, madera, junco y fibras naturales. Gracias por preferir piezas hechas con oficio y dedicación.
             </p>
           </div>
         </div>
@@ -130,6 +148,7 @@ function renderEmailShell({
 
 function buildOwnerHtml(order: Order, items: OrderItem[]) {
   const address = getAddress(order);
+  const orderCode = getOrderCode(order);
 
   return renderEmailShell({
     eyebrow: "Pedido pagado",
@@ -140,7 +159,7 @@ function buildOwnerHtml(order: Order, items: OrderItem[]) {
       <div style="display:block;width:100%;box-sizing:border-box;border-radius:18px;background:#FAF6F0;padding:16px;margin-bottom:20px;">
         <p style="margin:0 0 8px;color:#6f6257;font-size:13px;">Pedido</p>
         <p style="margin:0;font-size:22px;line-height:1.2;font-weight:800;color:#1f2a1f;overflow-wrap:break-word;">#${escapeHtml(
-          order.id.slice(0, 8)
+          orderCode
         )}</p>
         <p style="margin:8px 0 0;color:#9a663d;font-size:32px;line-height:1;font-weight:900;">${escapeHtml(
           formatCurrency(order.total)
@@ -149,21 +168,12 @@ function buildOwnerHtml(order: Order, items: OrderItem[]) {
 
       <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Cliente</h2>
       <div style="margin:0 0 22px;width:100%;box-sizing:border-box;">
-        <p style="margin:0 0 7px;color:#1f2a1f;font-size:15px;line-height:1.5;overflow-wrap:break-word;"><strong>Nombre:</strong> ${escapeHtml(
-          order.customer_name
-        )}</p>
-        <p style="margin:0 0 7px;color:#1f2a1f;font-size:15px;line-height:1.5;overflow-wrap:break-word;"><strong>Email:</strong> ${escapeHtml(
-          order.customer_email
-        )}</p>
-        <p style="margin:0 0 7px;color:#1f2a1f;font-size:15px;line-height:1.5;overflow-wrap:break-word;"><strong>Teléfono:</strong> ${escapeHtml(
-          order.customer_phone || "No informado"
-        )}</p>
-        <p style="margin:0 0 7px;color:#1f2a1f;font-size:15px;line-height:1.5;overflow-wrap:break-word;"><strong>Dirección:</strong> ${escapeHtml(
-          address || "No informada"
-        )}</p>
-        <p style="margin:0;color:#1f2a1f;font-size:15px;line-height:1.5;"><strong>Fecha:</strong> ${escapeHtml(
-          formatDate(order.created_at)
-        )}</p>
+        ${renderInfoRow("Nombre", order.customer_name)}
+        ${renderInfoRow("Email", order.customer_email)}
+        ${renderInfoRow("Teléfono", order.customer_phone)}
+        ${renderInfoRow("Dirección", address)}
+        ${renderInfoRow("Comentario", order.customer_comment)}
+        ${renderInfoRow("Fecha", formatDate(order.created_at))}
       </div>
 
       <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Productos comprados</h2>
@@ -177,6 +187,9 @@ function buildOwnerHtml(order: Order, items: OrderItem[]) {
 }
 
 function buildCustomerHtml(order: Order, items: OrderItem[]) {
+  const address = getAddress(order);
+  const orderCode = getOrderCode(order);
+
   return renderEmailShell({
     eyebrow: "Compra confirmada",
     title: "Recibimos tu compra en Raíz y Mimbre",
@@ -184,18 +197,30 @@ function buildCustomerHtml(order: Order, items: OrderItem[]) {
     children: `
       <div style="width:100%;box-sizing:border-box;border-radius:18px;background:#FAF6F0;padding:16px;margin-bottom:20px;">
         <p style="margin:0 0 8px;color:#6f6257;font-size:13px;">Pedido #${escapeHtml(
-          order.id.slice(0, 8)
+          orderCode
         )}</p>
         <p style="margin:0;color:#9a663d;font-size:34px;line-height:1;font-weight:900;">${escapeHtml(
           formatCurrency(order.total)
         )}</p>
       </div>
 
+      <p style="margin:0 0 18px;color:#1f2a1f;font-size:15px;line-height:1.7;">
+        Tu pedido quedó registrado correctamente. Guardaremos esta información para coordinar contigo el despacho, retiro o cualquier detalle necesario de entrega.
+      </p>
+
       <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Productos comprados</h2>
       ${renderItemsTable(items)}
 
+      <h2 style="margin:22px 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Datos de entrega</h2>
+      <div style="margin:0 0 20px;width:100%;box-sizing:border-box;border-radius:16px;background:#FAF6F0;padding:16px;">
+        ${renderInfoRow("Nombre", order.customer_name)}
+        ${renderInfoRow("Teléfono", order.customer_phone)}
+        ${renderInfoRow("Dirección", address)}
+        ${renderInfoRow("Comentario", order.customer_comment)}
+      </div>
+
       <p style="margin:22px 0 0;color:#1f2a1f;font-size:15px;line-height:1.7;">
-        Nos contactaremos contigo para coordinar despacho, retiro o detalles de entrega.
+        Si necesitamos confirmar algún dato, te contactaremos al teléfono o correo indicado al momento de la compra.
       </p>
       <p style="margin:14px 0 0;color:#1f2a1f;font-size:15px;font-weight:800;line-height:1.5;">
         Gracias por apoyar el trabajo artesanal.
@@ -217,7 +242,7 @@ function buildOwnerText(order: Order, items: OrderItem[]) {
 
   return [
     "Nuevo pedido pagado en Raíz y Mimbre",
-    `Pedido: #${order.id.slice(0, 8)}`,
+    `Pedido: #${getOrderCode(order)}`,
     "Estado: pagado",
     `Total: ${formatCurrency(order.total)}`,
     `Fecha: ${formatDate(order.created_at)}`,
@@ -225,13 +250,17 @@ function buildOwnerText(order: Order, items: OrderItem[]) {
     `Email: ${order.customer_email}`,
     `Teléfono: ${order.customer_phone || "No informado"}`,
     `Dirección: ${address || "No informada"}`,
+    `Comentario: ${order.customer_comment || "Sin comentario"}`,
+    "",
     "Productos:",
     products || "No hay productos asociados a esta orden.",
+    "",
     "Revisa el pedido en el panel de administración y coordina entrega o retiro con el cliente.",
   ].join("\n");
 }
 
 function buildCustomerText(order: Order, items: OrderItem[]) {
+  const address = getAddress(order);
   const products = items
     .map(
       (item) =>
@@ -243,12 +272,21 @@ function buildCustomerText(order: Order, items: OrderItem[]) {
 
   return [
     `Hola ${order.customer_name || ""},`,
-    "Recibimos tu compra en Raíz y Mimbre y tu pago fue aprobado.",
-    `Pedido: #${order.id.slice(0, 8)}`,
+    "",
+    "Recibimos tu compra en Raíz y Mimbre y tu pago fue aprobado correctamente.",
+    `Pedido: #${getOrderCode(order)}`,
     `Total: ${formatCurrency(order.total)}`,
+    "",
     "Productos:",
     products || "No hay productos asociados a esta orden.",
-    "Nos contactaremos contigo para coordinar despacho, retiro o detalles de entrega.",
+    "",
+    "Datos de entrega:",
+    `Nombre: ${order.customer_name}`,
+    `Teléfono: ${order.customer_phone || "No informado"}`,
+    `Dirección: ${address || "No informada"}`,
+    `Comentario: ${order.customer_comment || "Sin comentario"}`,
+    "",
+    "Si necesitamos confirmar algún dato, te contactaremos al teléfono o correo indicado al momento de la compra.",
     "Gracias por apoyar el trabajo artesanal.",
   ].join("\n");
 }
@@ -272,7 +310,7 @@ export async function sendOrderPaidEmails({
     resend.emails.send({
       from,
       to: notificationEmail,
-      subject: "Nuevo pedido pagado en Raíz y Mimbre",
+      subject: `Nuevo pedido pagado #${getOrderCode(order)} - Raíz y Mimbre`,
       html: buildOwnerHtml(order, items),
       text: buildOwnerText(order, items),
     }),
@@ -283,7 +321,7 @@ export async function sendOrderPaidEmails({
       resend.emails.send({
         from,
         to: order.customer_email,
-        subject: "Recibimos tu compra en Raíz y Mimbre",
+        subject: `Confirmación de compra #${getOrderCode(order)} - Raíz y Mimbre`,
         html: buildCustomerHtml(order, items),
         text: buildCustomerText(order, items),
       })
