@@ -99,7 +99,13 @@ function getOrderItemCount(items: OrderItem[]) {
 }
 
 function normalizePhoneForWhatsApp(phone: string) {
-  return phone.replace(/[\s+\-()]/g, "");
+  const digits = phone.replace(/\D/g, "");
+
+  if (digits.startsWith("56")) return digits;
+  if (digits.startsWith("09")) return `56${digits.slice(1)}`;
+  if (digits.startsWith("9")) return `56${digits}`;
+
+  return digits;
 }
 
 function buildOrderAddress(order: Order) {
@@ -115,22 +121,26 @@ function buildOrderSummary(order: Order, items: OrderItem[]) {
       ? items
           .map(
             (item) =>
-              `* ${item.product_name} x ${item.quantity} - ${formatCurrency(
+              `• ${item.product_name} x ${item.quantity} — ${formatCurrency(
                 item.subtotal
               )}`
           )
           .join("\n")
-      : "* No hay productos asociados a esta orden.";
+      : "• No hay productos asociados a esta orden.";
 
   return [
-    `Orden #${order.id.slice(0, 8)}`,
+    `Pedido #${order.id.slice(0, 8).toUpperCase()}`,
+    "",
     `Estado: ${order.status}`,
     `Cliente: ${order.customer_name}`,
     `Email: ${order.customer_email}`,
-    order.customer_phone ? `Telefono: ${order.customer_phone}` : null,
-    address ? `Direccion: ${address}` : null,
+    order.customer_phone ? `Teléfono: ${order.customer_phone}` : null,
+    address ? `Dirección: ${address}` : null,
+    order.customer_comment ? `Comentario: ${order.customer_comment}` : null,
+    "",
     "Productos:",
     productsText,
+    "",
     `Total: ${formatCurrency(order.total)}`,
   ]
     .filter(Boolean)
