@@ -76,6 +76,17 @@ function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-CL");
 }
 
+function isToday(date: string) {
+  const value = new Date(date);
+  const today = new Date();
+
+  return (
+    value.getFullYear() === today.getFullYear() &&
+    value.getMonth() === today.getMonth() &&
+    value.getDate() === today.getDate()
+  );
+}
+
 function getOrderItemCount(items: OrderItem[]) {
   return items.reduce((total, item) => total + Number(item.quantity), 0);
 }
@@ -329,6 +340,7 @@ export default function AdminDashboardClient() {
       ).length,
       paidOrders: paidOrders.length,
       pendingOrders: orders.filter((order) => order.status === "pendiente").length,
+      todayOrders: orders.filter((order) => isToday(order.created_at)).length,
     };
   }, [orders, products]);
 
@@ -454,7 +466,7 @@ export default function AdminDashboardClient() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-coffee font-black shadow-md">
-              R
+              RM
             </div>
 
             <div className="min-w-0">
@@ -477,7 +489,7 @@ export default function AdminDashboardClient() {
       </header>
 
       <main className="mx-auto block max-w-7xl px-4 py-5 sm:px-6 lg:py-7">
-        <section className="mx-auto mb-5 grid w-full grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+        <section className="mx-auto mb-5 grid w-full grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
           <MetricCard
             label="Productos" 
             value={metrics.totalProducts} 
@@ -498,6 +510,7 @@ export default function AdminDashboardClient() {
             value={metrics.pendingOrders}
             tone="yellow"
           />
+          <MetricCard label="Hoy" value={metrics.todayOrders} tone="coffee" />
         </section>
 
         <section className="mb-5 rounded-3xl border border-border bg-white/95 p-3 shadow-soft">
@@ -1120,11 +1133,11 @@ function MetricCard({
   }[tone];
 
   return (
-    <div className="rounded-[1.35rem] border border-border bg-white/95 p-4 shadow-soft">
-      <p className="text-xs font-bold uppercase tracking-wide text-text-secondary">
+    <div className="rounded-[1.25rem] border border-border bg-white/95 p-4 shadow-sm sm:p-5">
+      <p className="text-[11px] font-black uppercase tracking-wide text-text-secondary">
         {label}
       </p>
-      <p className={`mt-2 text-2xl font-black leading-tight ${toneClass}`}>
+      <p className={`mt-3 text-3xl font-black leading-none ${toneClass}`}>
         {value}
       </p>
     </div>
