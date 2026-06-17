@@ -39,20 +39,39 @@ drop policy if exists "Admins can read all products" on public.products;
 drop policy if exists "Admins can update products" on public.products;
 drop policy if exists "Public can read available products" on public.products;
 
+-- old initial policies
+drop policy if exists "Authenticated users can insert products" on public.products;
+drop policy if exists "Authenticated users can update products" on public.products;
+drop policy if exists "Authenticated users can delete products" on public.products;
+
 -- public.orders
 drop policy if exists "Admins can delete orders" on public.orders;
 drop policy if exists "Admins can read orders" on public.orders;
 drop policy if exists "Admins can update orders" on public.orders;
+
+-- old initial policies
+drop policy if exists "Anyone can insert orders" on public.orders;
+drop policy if exists "Authenticated users can read orders" on public.orders;
+drop policy if exists "Authenticated users can update orders" on public.orders;
 
 -- public.order_items
 drop policy if exists "Admins can delete order items" on public.order_items;
 drop policy if exists "Admins can read order items" on public.order_items;
 drop policy if exists "Admins can update order items" on public.order_items;
 
+-- old initial policies
+drop policy if exists "Anyone can insert order items" on public.order_items;
+drop policy if exists "Authenticated users can read order items" on public.order_items;
+
 -- public.payments
 drop policy if exists "Admins can delete payments" on public.payments;
 drop policy if exists "Admins can read payments" on public.payments;
 drop policy if exists "Admins can update payments" on public.payments;
+
+-- old initial policies
+drop policy if exists "Authenticated users can insert payments" on public.payments;
+drop policy if exists "Authenticated users can update payments" on public.payments;
+drop policy if exists "Authenticated users can read payments" on public.payments;
 
 -- storage.objects
 drop policy if exists "Admins can delete product images" on storage.objects;

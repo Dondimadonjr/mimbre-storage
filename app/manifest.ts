@@ -2,33 +2,25 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Raíz y Mimbre Admin",
-    short_name: "R&M Admin",
-    description: "Panel de pedidos y gestión para Raíz y Mimbre.",
-    start_url: "/admin",
+    name: "Raíz y Mimbre",
+    short_name: "Raíz y Mimbre",
+    description:
+      "Tienda de decoración artesanal en mimbre, fibras naturales y madera.",
+    start_url: "/",
     scope: "/",
     display: "standalone",
     background_color: "#FAF6F0",
-    theme_color: "#2E3B1F",
-    lang: "es-CL",
+    theme_color: "#8B5E3C",
     icons: [
       {
-        src: "/icons/icon-192.png",
+        src: "/icon-192.png",
         sizes: "192x192",
         type: "image/png",
-        purpose: "any",
       },
       {
-        src: "/icons/icon-512.png",
+        src: "/icon-512.png",
         sizes: "512x512",
         type: "image/png",
-        purpose: "any",
-      },
-      {
-        src: "/icons/maskable-512.png",
-        sizes: "512x512",
-        type: "image/png",
-        purpose: "maskable",
       },
     ],
   };

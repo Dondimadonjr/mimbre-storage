@@ -247,7 +247,7 @@ export default function AdminDashboardClient() {
       } = await supabase.auth.getSession();
 
       if (!session) {
-        router.push("/admin/login");
+        router.push("/panel-rm/login");
         return;
       }
 

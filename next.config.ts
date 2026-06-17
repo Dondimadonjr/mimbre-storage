@@ -88,6 +88,15 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: "/panel-rm/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, max-age=0",
+          },
+        ],
+      },
+      {
         source: "/api/:path*",
         headers: [
           {

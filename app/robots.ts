@@ -9,6 +9,9 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: [
         "/admin",
+        "/admin/login",
+        "/panel-rm",
+        "/panel-rm/login",
         "/api",
         "/carrito",
         "/pago/checkout",
