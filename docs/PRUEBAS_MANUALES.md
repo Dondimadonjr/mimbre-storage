@@ -116,7 +116,8 @@ Estas tarjetas están documentadas para ambiente de integración. No usarlas en 
 
 ## Admin
 
-- [ ] Abrir `/admin` sin sesión y confirmar redirect a login.
+- [ ] Abrir `/panel-rm` sin sesión y confirmar redirect a `/panel-rm/login`.
+- [ ] Abrir `/admin` y `/admin/login` y confirmar que no muestran el login real.
 - [ ] Iniciar sesión con usuario administrador.
 - [ ] Revisar dashboard desktop.
 - [ ] Revisar dashboard mobile.
@@ -138,7 +139,7 @@ Estas tarjetas están documentadas para ambiente de integración. No usarlas en 
 - [ ] Confirmar que incluye home, productos, FAQ y legales.
 - [ ] Confirmar que incluye productos dinámicos disponibles.
 - [ ] Abrir `/robots.txt`.
-- [ ] Confirmar que bloquea `/admin`, `/api`, `/carrito` y rutas de pago.
+- [ ] Confirmar que bloquea `/admin`, `/panel-rm`, `/api`, `/carrito` y rutas de pago.
 - [ ] Abrir `/politica-privacidad`.
 - [ ] Abrir `/terminos`.
 - [ ] Abrir `/cambios-devoluciones`.
@@ -147,8 +148,8 @@ Estas tarjetas están documentadas para ambiente de integración. No usarlas en 
 ## PWA básica
 
 - [ ] Abrir `/manifest.webmanifest`.
-- [ ] Confirmar name `Raíz y Mimbre Admin`.
-- [ ] Confirmar start_url `/admin`.
+- [ ] Confirmar name `Raíz y Mimbre`.
+- [ ] Confirmar start_url `/`.
 - [ ] Confirmar iconos 192 y 512.
 - [ ] Probar opción de agregar a pantalla de inicio en mobile si está disponible.
 
