@@ -152,9 +152,9 @@ function buildOwnerHtml(order: Order, items: OrderItem[]) {
 
   return renderEmailShell({
     eyebrow: "Pedido pagado",
-    title: "Nuevo pedido pagado en Raíz y Mimbre",
+    title: "Nuevo pedido",
     intro:
-      "Webpay confirmó un pago aprobado. Revisa el detalle del pedido y coordina entrega o retiro con el cliente.",
+      "Pago aprobado. Revisa el detalle del pedido y coordina entrega o retiro con el cliente.",
     children: `
       <div style="display:block;width:100%;box-sizing:border-box;border-radius:18px;background:#FAF6F0;padding:16px;margin-bottom:20px;">
         <p style="margin:0 0 8px;color:#6f6257;font-size:13px;">Pedido</p>
@@ -176,7 +176,7 @@ function buildOwnerHtml(order: Order, items: OrderItem[]) {
         ${renderInfoRow("Fecha", formatDate(order.created_at))}
       </div>
 
-      <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Productos comprados</h2>
+      <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Productos</h2>
       ${renderItemsTable(items)}
 
       <p style="margin:22px 0 0;border-radius:16px;background:#FAF6F0;padding:16px;color:#6f6257;font-size:15px;line-height:1.6;">
@@ -208,7 +208,7 @@ function buildCustomerHtml(order: Order, items: OrderItem[]) {
         Tu pedido quedó registrado correctamente. Guardaremos esta información para coordinar contigo el despacho, retiro o cualquier detalle necesario de entrega.
       </p>
 
-      <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Productos comprados</h2>
+      <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Productos</h2>
       ${renderItemsTable(items)}
 
       <h2 style="margin:22px 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Datos de entrega</h2>
