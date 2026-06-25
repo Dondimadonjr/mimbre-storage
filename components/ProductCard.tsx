@@ -93,12 +93,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Meta */}
         <div className="mb-2 flex min-h-6 flex-wrap items-center gap-1.5 sm:mb-4 sm:min-h-7 sm:gap-2">
           {product.category && (
-            <span className="rounded-full border border-coffee/15 bg-cream px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.18em] text-coffee sm:px-3 sm:text-[10px] sm:tracking-[0.2em]">
+            <span className="rounded-full border border-[#A06A3B]/20 bg-[#D7B27A]/30 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.18em] text-[#5A321C] sm:px-3 sm:text-[10px] sm:tracking-[0.2em]">
               {product.category}
             </span>
           )}
 
-          <span className="rounded-full border border-border bg-white px-2.5 py-1 text-[9px] font-semibold text-text-secondary sm:px-3 sm:text-[10px]">
+          <span className="rounded-full border border-[#DDE8D8]/60 bg-[#DDE8D8]/25 px-2.5 py-1 text-[9px] font-semibold text-[#10291E] sm:px-3 sm:text-[10px]">
             Hecho a mano
           </span>
         </div>

@@ -149,8 +149,8 @@ export default function ProductDetailClient({ id }: ProductDetailClientProps) {
       <main className="min-h-screen bg-cream px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-4 h-9 w-28 animate-pulse rounded-full bg-white/80" />
-          <div className="grid gap-4 rounded-[2rem] border border-border bg-white/80 p-3.5 shadow-soft sm:p-6 lg:grid-cols-2 lg:gap-8">
-            <div className="aspect-[4/3] animate-pulse rounded-[1.75rem] bg-coffee/12 lg:aspect-auto lg:min-h-[520px]" />
+          <div className="grid gap-4 rounded-4xl border border-border bg-white/80 p-3.5 shadow-soft sm:p-6 lg:grid-cols-2 lg:gap-8">
+            <div className="aspect-4/3 animate-pulse rounded-[1.75rem] bg-coffee/12 lg:aspect-auto lg:min-h-130" />
             <div className="space-y-4 p-1 sm:p-3">
               <div className="h-7 w-32 animate-pulse rounded-full bg-cream" />
               <div className="h-10 w-4/5 animate-pulse rounded-2xl bg-cream" />
@@ -166,7 +166,7 @@ export default function ProductDetailClient({ id }: ProductDetailClientProps) {
   if (!product) {
     return (
       <main className="min-h-screen bg-cream px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl rounded-[2rem] border border-border bg-white p-8 text-center shadow-soft">
+        <div className="mx-auto max-w-2xl rounded-4xl border border-border bg-white p-8 text-center shadow-soft">
           <p className="text-xs font-black uppercase tracking-[0.24em] text-coffee">
             Producto
           </p>
@@ -208,7 +208,7 @@ export default function ProductDetailClient({ id }: ProductDetailClientProps) {
           ← Volver
         </Link>
 
-        <section className="relative overflow-hidden rounded-[2rem] border border-border bg-white/90 p-3 shadow-[0_22px_70px_rgba(49,39,31,0.09)] backdrop-blur sm:rounded-[2.5rem] sm:p-5 lg:p-7">
+        <section className="relative overflow-hidden rounded-4xl border border-border bg-white/90 p-3 shadow-[0_22px_70px_rgba(49,39,31,0.09)] backdrop-blur sm:rounded-[2.5rem] sm:p-5 lg:p-7">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -left-20 -top-20 h-60 w-60 rounded-full bg-coffee/8 blur-3xl"
@@ -219,8 +219,8 @@ export default function ProductDetailClient({ id }: ProductDetailClientProps) {
           />
 
           <div className="relative grid gap-5 lg:grid-cols-[1.04fr_0.96fr] lg:gap-8">
-            <div className="group relative min-w-0 overflow-hidden rounded-[1.65rem] border border-border bg-gradient-to-br from-white via-cream/45 to-coffee/10 p-3 shadow-inner sm:rounded-[2rem] sm:p-5">
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.35rem] bg-white/72 sm:rounded-[1.65rem] lg:aspect-auto lg:min-h-[560px]">
+            <div className="group relative min-w-0 overflow-hidden rounded-[1.65rem] border border-border bg-linear-to-br from-white via-cream/45 to-coffee/10 p-3 shadow-inner sm:rounded-4xl sm:p-5">
+              <div className="relative aspect-4/3 w-full overflow-hidden rounded-[1.35rem] bg-white/72 sm:rounded-[1.65rem] lg:aspect-auto lg:min-h-140">
                 {product.image_url ? (
                   <Image
                     src={product.image_url}
@@ -262,9 +262,9 @@ export default function ProductDetailClient({ id }: ProductDetailClientProps) {
                 </p>
               )}
 
-              <div className="my-5 h-px bg-gradient-to-r from-border via-border to-transparent sm:my-7" />
+              <div className="my-5 h-px bg-linear-to-r from-border via-border to-transparent sm:my-7" />
 
-              <div className="rounded-[1.5rem] border border-border bg-cream/72 p-4 sm:rounded-[1.75rem] sm:p-5">
+              <div className="rounded-3xl border border-border bg-cream/72 p-4 sm:rounded-[1.75rem] sm:p-5">
                 <p className="text-[0.68rem] font-black uppercase tracking-[0.24em] text-coffee/75">
                   Valor
                 </p>
@@ -278,7 +278,7 @@ export default function ProductDetailClient({ id }: ProductDetailClientProps) {
                 )}
               </div>
 
-              <div className="mt-4 rounded-[1.5rem] border border-border bg-white p-3.5 shadow-sm sm:mt-5 sm:rounded-[1.75rem] sm:p-4">
+              <div className="mt-4 rounded-3xl border border-border bg-white p-3.5 shadow-sm sm:mt-5 sm:rounded-[1.75rem] sm:p-4">
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-sm font-black text-text-dark">
                     Cantidad
@@ -319,7 +319,7 @@ export default function ProductDetailClient({ id }: ProductDetailClientProps) {
                     type="button"
                     onClick={handleAddToCart}
                     disabled={!isPurchasable}
-                    className={`focus-ring rounded-full px-5 py-3.5 text-sm font-black text-white shadow-sm transition-all duration-300 active:scale-[0.98] ${
+                    className={`focus-ring rounded-full px-5 py-3.5 text-sm font-black text-white shadow-sm transition-all duration-300 hover:translate-y-0.5 active:scale-[0.98] ${
                       addedToCart
                         ? "bg-green-600 shadow-md"
                         : isPurchasable

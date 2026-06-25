@@ -49,8 +49,8 @@ export default function Hero() {
     >
       <div className="mx-auto grid max-w-7xl items-center gap-6 sm:gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.8fr)] lg:gap-12">
         <div className="max-w-2xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-coffee/15 bg-white/70 px-3 py-1.5 text-[0.68rem] font-black uppercase tracking-[0.2em] text-coffee shadow-sm sm:text-xs sm:tracking-[0.22em]">
-            <span className="h-1.5 w-1.5 rounded-full bg-coffee" />
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#A06A3B]/20 bg-[#D7B27A]/25 px-3 py-1.5 text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#5A321C] shadow-sm sm:text-xs sm:tracking-[0.22em]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#A06A3B]" />
             Artesanía natural
           </p>
 
@@ -67,11 +67,11 @@ export default function Hero() {
             {benefits.map((benefit) => (
               <span
                 key={benefit.label}
-                className="inline-flex items-center gap-1.5 rounded-full border border-coffee/15 bg-white/75 px-3 py-1.5 text-xs font-bold text-text-secondary shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-coffee/25 hover:bg-white sm:px-3.5 sm:py-2 sm:text-sm"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#DDE8D8]/60 bg-[#DDE8D8]/20 px-3 py-1.5 text-xs font-bold text-[#10291E] shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-[#10291E]/20 hover:bg-[#DDE8D8]/35 sm:px-3.5 sm:py-2 sm:text-sm"
               >
                 <svg
                   viewBox="0 0 24 24"
-                  className="h-3.5 w-3.5 text-coffee"
+                  className="h-3.5 w-3.5 text-[#10291E]"
                   fill="none"
                   aria-hidden="true"
                 >

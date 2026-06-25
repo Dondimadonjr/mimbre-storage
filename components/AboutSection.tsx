@@ -73,8 +73,8 @@ export default function AboutSection() {
 
           <div className="relative grid min-w-0 gap-4 p-4 sm:gap-6 sm:p-7 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8 lg:p-9">
             <div className="min-w-0">
-              <span className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-coffee/15 bg-cream px-3 py-1.5 text-[0.64rem] font-black uppercase tracking-[0.2em] text-coffee sm:px-4 sm:py-2 sm:text-[0.7rem] sm:tracking-[0.24em]">
-                <span className="h-1.5 w-1.5 rounded-full bg-coffee" />
+              <span className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-[#A06A3B]/20 bg-[#D7B27A]/25 px-3 py-1.5 text-[0.64rem] font-black uppercase tracking-[0.2em] text-[#5A321C] sm:px-4 sm:py-2 sm:text-[0.7rem] sm:tracking-[0.24em]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#A06A3B]" />
                 Nuestro oficio
               </span>
 

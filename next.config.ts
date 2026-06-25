@@ -17,7 +17,7 @@ const csp = [
   "base-uri 'self'",
   "object-src 'none'",
   "frame-ancestors 'none'",
-  "form-action 'self'",
+  "form-action 'self' https://webpay3gint.transbank.cl https://webpay3g.transbank.cl",
   `script-src ${scriptSrc}`,
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: https://${supabaseHostname}`,

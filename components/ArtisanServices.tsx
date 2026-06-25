@@ -75,8 +75,8 @@ export default function ArtisanServices() {
 
             <div className="relative grid min-w-0 gap-5 p-4 sm:p-7 lg:grid-cols-[0.95fr_1.05fr] lg:gap-9 lg:p-10">
               <div className="min-w-0">
-                <span className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-coffee/25 bg-coffee/10 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-coffee sm:text-[0.72rem] sm:tracking-[0.22em]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-coffee" />
+                <span className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-[#A06A3B]/25 bg-[#D7B27A]/25 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black sm:px-4 sm:py-2 sm:text-[0.72rem] sm:tracking-[0.22em]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#D7B27A]" />
                   Servicios a pedido
                 </span>
 

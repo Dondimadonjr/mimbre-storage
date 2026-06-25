@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-cream">
+    <main className="min-h-screen bg-gradient-to-b from-[#FFFDF8] via-[#F7F1E8] to-[#FFFDF8]">
       <Hero />
       <Categories />
       <AboutSection />

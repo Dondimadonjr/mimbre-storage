@@ -31,7 +31,7 @@ const categories = [
 
 export default function Categories() {
   return (
-    <section className="section-reveal bg-cream/40 px-4 py-7 sm:px-6 sm:py-10 lg:px-8">
+    <section className="section-reveal bg-gradient-to-b from-[#F7F1E8]/60 to-[#DDE8D8]/30 px-4 py-7 sm:px-6 sm:py-10 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto mb-5 max-w-2xl text-center sm:mb-6">
           <p className="inline-flex rounded-full border border-coffee/15 bg-white px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-coffee shadow-sm sm:px-4 sm:py-2 sm:text-[11px]">
@@ -67,7 +67,7 @@ export default function Categories() {
               className="focus-ring group rounded-2xl border border-border bg-white/90 p-3 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-coffee/30 hover:bg-white hover:shadow-[0_18px_40px_rgba(93,58,31,0.13)] active:scale-[0.99] sm:p-4"
             >
               <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start sm:gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-coffee/10 bg-cream shadow-sm transition duration-300 group-hover:scale-105 group-hover:border-coffee/25 group-hover:bg-white sm:h-14 sm:w-14">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#A06A3B]/20 bg-[#D7B27A]/25 shadow-sm transition duration-300 group-hover:scale-105 group-hover:border-[#A06A3B]/35 group-hover:bg-[#D7B27A]/40 sm:h-14 sm:w-14">
                   <Image
                     src={category.iconSrc}
                     alt=""

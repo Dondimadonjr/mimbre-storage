@@ -15,9 +15,10 @@ export default function ContactSection() {
     >
       <div className="mx-auto grid max-w-7xl gap-3.5 rounded-3xl border border-border bg-white p-3.5 shadow-soft sm:gap-6 sm:rounded-4xl sm:p-7 lg:grid-cols-[1fr_0.78fr] lg:items-center">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-coffee sm:text-[11px] sm:tracking-[0.24em]">
-            Contacto
-          </p>
+          <span className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-[#A06A3B]/25 bg-[#D7B27A]/25 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black sm:px-4 sm:py-2 sm:text-[0.72rem] sm:tracking-[0.22em]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#D7B27A]" />
+              Contacto
+          </span>
 
           <h2 className="mt-2 max-w-2xl text-[1.55rem] font-black leading-tight text-text-dark sm:mt-4 sm:text-4xl">
             Hablemos de tu próxima pieza o reparación.
@@ -62,8 +63,8 @@ export default function ContactSection() {
         </div>
 
         <div className="grid gap-2.5 sm:gap-3">
-          <div className="group rounded-2xl border border-border bg-cream/65 p-3 transition duration-300 hover:-translate-y-0.5 hover:border-coffee/20 hover:bg-cream sm:p-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-coffee">
+          <div className="group rounded-2xl border border-[#A06A3B]/15 bg-[#D7B27A]/15 p-3 transition duration-300 hover:-translate-y-0.5 hover:border-[#A06A3B]/30 hover:bg-[#D7B27A]/25 sm:p-4">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#A06A3B]">
               WhatsApp
             </p>
             <p className="mt-1.5 break-all text-sm font-black text-text-dark sm:mt-2">
@@ -71,20 +72,20 @@ export default function ContactSection() {
             </p>
           </div>
 
-          <div className="group rounded-2xl border border-border bg-cream/65 p-3 transition duration-300 hover:-translate-y-0.5 hover:border-coffee/20 hover:bg-cream sm:p-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-coffee">
+          <div className="group rounded-2xl border border-[#DDE8D8]/60 bg-[#DDE8D8]/20 p-3 transition duration-300 hover:-translate-y-0.5 hover:border-[#10291E]/20 hover:bg-[#DDE8D8]/30 sm:p-4">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#10291E]">
               Email
             </p>
             <a
               href="mailto:contacto@mimbrestore.cl"
-              className="focus-ring mt-1.5 inline-flex break-all rounded-lg text-sm font-black text-text-dark transition hover:text-coffee sm:mt-2"
+              className="focus-ring mt-1.5 inline-flex break-all rounded-lg text-sm font-black text-text-dark transition hover:text-[#10291E] sm:mt-2"
             >
               contacto@mimbrestore.cl
             </a>
           </div>
 
-          <div className="group rounded-2xl border border-border bg-cream/65 p-3 transition duration-300 hover:-translate-y-0.5 hover:border-coffee/20 hover:bg-cream sm:p-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-coffee">
+          <div className="group rounded-2xl border border-[#A06A3B]/15 bg-[#B66A3C]/12 p-3 transition duration-300 hover:-translate-y-0.5 hover:border-[#A06A3B]/30 hover:bg-[#B66A3C]/20 sm:p-4">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#A06A3B]">
               Horario
             </p>
             <p className="mt-1.5 text-sm font-black text-text-dark sm:mt-2">

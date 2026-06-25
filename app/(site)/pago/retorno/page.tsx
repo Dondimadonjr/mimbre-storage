@@ -16,54 +16,61 @@ function PaymentReturnLoading() {
 }
 
 function PaymentReturnContent() {
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const confirmPayment = async () => {
-      const tokenWs = searchParams.get('token_ws')
+      const tokenWs = searchParams.get("token_ws");
 
       if (!tokenWs) {
-        window.location.replace('/pago/resultado?status=error')
-        return
+        sessionStorage.removeItem("mimbre_webpay_pending");
+        window.location.replace("/pago/resultado?status=error");
+        return;
       }
 
       try {
-        const response = await fetch('/api/webpay/confirmar', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch("/api/webpay/confirmar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token_ws: tokenWs }),
-        })
+        });
 
-        const data = await response.json()
+        const data = await response.json();
 
-        if (response.ok && data.status === 'pagado' && data.orderId) {
-          clearCart()
-          window.dispatchEvent(new Event('cart-updated'))
-          window.dispatchEvent(new Event('cart:updated'))
+        if (response.ok && data.status === "pagado" && data.orderId) {
+          sessionStorage.removeItem("mimbre_webpay_pending");
+          clearCart();
+          window.dispatchEvent(new Event("cart-updated"));
+          window.dispatchEvent(new Event("cart:updated"));
 
           const resultUrl = `/pago/resultado?status=success&orderId=${encodeURIComponent(
             String(data.orderId)
-          )}`
+          )}`;
 
-          window.location.replace(resultUrl)
-          return
+          window.location.replace(resultUrl);
+          return;
         }
 
-        const errorMessage = data?.message || 'Pago no procesado'
+        sessionStorage.removeItem("mimbre_webpay_pending");
+
+        const errorMessage = data?.message || "Pago no procesado";
 
         window.location.replace(
-          `/pago/resultado?status=error&message=${encodeURIComponent(errorMessage)}`
-        )
+          `/pago/resultado?status=error&message=${encodeURIComponent(
+            errorMessage
+          )}`
+        );
       } catch (error) {
-        console.error('Error confirming payment:', error)
-        window.location.replace('/pago/resultado?status=error')
+        console.error("Error confirming payment:", error);
+        sessionStorage.removeItem("mimbre_webpay_pending");
+        window.location.replace("/pago/resultado?status=error");
       }
-    }
+    };
 
-    confirmPayment()
-  }, [searchParams])
+    confirmPayment();
+  }, [searchParams]);
 
-  return <PaymentReturnLoading />
+  return <PaymentReturnLoading />;
 }
 
 export default function PaymentReturnPage() {
