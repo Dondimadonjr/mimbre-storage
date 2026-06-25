@@ -25,6 +25,7 @@ CREATE TABLE orders (
   customer_comment TEXT,
   total INTEGER NOT NULL,
   status TEXT DEFAULT 'pendiente',
+  management_status TEXT NOT NULL DEFAULT 'nuevo',
   buy_order TEXT,
   session_id TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

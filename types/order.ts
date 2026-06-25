@@ -9,6 +9,7 @@ export interface Order {
   customer_comment: string | null;
   total: number;
   status: 'pendiente' | 'pagado' | 'rechazado' | 'cancelado';
+  management_status: 'nuevo' | 'preparando' | 'listo' | 'entregado';
   buy_order: string | null;
   session_id: string | null;
   created_at: string;

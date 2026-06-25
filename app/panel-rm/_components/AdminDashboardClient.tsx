@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { formatCurrency } from "@/lib/format";
 import AdminProductForm from "@/components/AdminProductForm";
@@ -13,6 +13,7 @@ type Tab = "productos" | "ordenes";
 type ProductStatusFilter = "todos" | "disponibles" | "no-disponibles" | "stock-bajo";
 type ProductSort = "nombre" | "precio" | "stock";
 type OrderStatusFilter = "todas" | "pagado" | "pendiente" | "rechazado" | "cancelado";
+type OrderManagementStatusFilter = "todas" | "nuevo" | "preparando" | "listo" | "entregado";
 type OrderItemsMap = Record<string, OrderItem[]>;
 
 const LOW_STOCK_LIMIT = 5;
@@ -38,6 +39,14 @@ const orderStatusOptions: SelectProOption[] = [
   { label: "Canceladas", value: "cancelado" },
 ];
 
+const orderManagementStatusOptions: SelectProOption[] = [
+  { label: "Todas", value: "todas" },
+  { label: "Nuevo", value: "nuevo" },
+  { label: "Preparando", value: "preparando" },
+  { label: "Listo", value: "listo" },
+  { label: "Entregado", value: "entregado" },
+];
+
 function normalizeText(value: string | null | undefined) {
   return String(value ?? "").trim().toLowerCase();
 }
@@ -52,6 +61,29 @@ function getOrderBadgeClass(status: Order["status"]) {
   }
 
   return "bg-red-100 text-red-700 ring-red-200";
+}
+
+function getManagementStatusBadgeClass(status: Order["management_status"]) {
+  if (status === "nuevo") {
+    return "bg-slate-100 text-slate-700 ring-slate-200";
+  }
+
+  if (status === "preparando") {
+    return "bg-yellow-100 text-yellow-800 ring-yellow-200";
+  }
+
+  if (status === "listo") {
+    return "bg-blue-100 text-blue-700 ring-blue-200";
+  }
+
+  return "bg-green-100 text-green-700 ring-green-200";
+}
+
+function getManagementStatusLabel(status: Order["management_status"]) {
+  if (status === "nuevo") return "Nuevo";
+  if (status === "preparando") return "Preparando";
+  if (status === "listo") return "Listo";
+  return "Entregado";
 }
 
 function getProductBadgeClass(product: Product) {
@@ -146,6 +178,7 @@ function buildOrderMessage(order: Order, items: OrderItem[]) {
 
 export default function AdminDashboardClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [tab, setTab] = useState<Tab>("productos");
   const [products, setProducts] = useState<Product[]>([]);
@@ -153,6 +186,7 @@ export default function AdminDashboardClient() {
   const [orderItemsByOrderId, setOrderItemsByOrderId] = useState<OrderItemsMap>(
     {}
   );
+  const [openedOrderFromQuery, setOpenedOrderFromQuery] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -165,6 +199,7 @@ export default function AdminDashboardClient() {
   const [productSort, setProductSort] = useState<ProductSort>("nombre");
   const [orderSearch, setOrderSearch] = useState("");
   const [orderStatus, setOrderStatus] = useState<OrderStatusFilter>("todas");
+  const [orderManagementStatus, setOrderManagementStatus] = useState<OrderManagementStatusFilter>("todas");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [selectedOrderItems, setSelectedOrderItems] = useState<OrderItem[]>([]);
   const [loadingOrderItems, setLoadingOrderItems] = useState(false);
@@ -268,6 +303,31 @@ export default function AdminDashboardClient() {
     return () => window.clearTimeout(timer);
   }, [checkingAuth]);
 
+  useEffect(() => {
+    if (
+      checkingAuth ||
+      loadingOrders ||
+      openedOrderFromQuery ||
+      tab !== "ordenes"
+    ) {
+      return;
+    }
+
+    const orderId = searchParams.get("orderId");
+    if (!orderId) return;
+
+    const orderToOpen = orders.find((order) => order.id === orderId);
+    if (!orderToOpen) return;
+
+    setTab("ordenes");
+    setOpenedOrderFromQuery(true);
+
+    void (async () => {
+      await handleOpenOrderDetail(orderToOpen);
+      router.replace("/panel-rm");
+    })();
+  }, [checkingAuth, loadingOrders, openedOrderFromQuery, orders, router, searchParams, tab]);
+
   const categories = useMemo(() => {
     const uniqueCategories = new Set(
       products
@@ -323,9 +383,13 @@ export default function AdminDashboardClient() {
       const matchesStatus =
         orderStatus === "todas" || order.status === orderStatus;
 
-      return matchesSearch && matchesStatus;
+      const matchesManagementStatus =
+        orderManagementStatus === "todas" ||
+        order.management_status === orderManagementStatus;
+
+      return matchesSearch && matchesStatus && matchesManagementStatus;
     });
-  }, [orderSearch, orderStatus, orders]);
+  }, [orderSearch, orderStatus, orderManagementStatus, orders]);
 
   const metrics = useMemo(() => {
     const paidOrders = orders.filter((order) => order.status === "pagado");
@@ -865,7 +929,7 @@ export default function AdminDashboardClient() {
                   </p>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-[minmax(0,260px)_160px]">
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,260px)_160px] lg:grid-cols-[minmax(0,260px)_160px_160px]">
                   <label className="block">
                     <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-text-secondary">
                       Buscar
@@ -888,6 +952,20 @@ export default function AdminDashboardClient() {
                       options={orderStatusOptions}
                       onChange={(nextValue) =>
                         setOrderStatus(nextValue as OrderStatusFilter)
+                      }
+                      fullWidth
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-text-secondary">
+                      Gestión
+                    </span>
+                    <SelectPro
+                      value={orderManagementStatus}
+                      options={orderManagementStatusOptions}
+                      onChange={(nextValue) =>
+                        setOrderManagementStatus(nextValue as OrderManagementStatusFilter)
                       }
                       fullWidth
                     />
@@ -956,13 +1034,22 @@ export default function AdminDashboardClient() {
                           </td>
 
                           <td className="px-5 py-4">
-                            <span
-                              className={`inline-flex rounded-full px-3 py-1.5 text-xs font-bold ring-1 ${getOrderBadgeClass(
-                                order.status
-                              )}`}
-                            >
-                              {order.status}
-                            </span>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span
+                                className={`inline-flex rounded-full px-3 py-1.5 text-xs font-bold ring-1 ${getOrderBadgeClass(
+                                  order.status
+                                )}`}
+                              >
+                                {order.status}
+                              </span>
+                              <span
+                                className={`inline-flex rounded-full px-3 py-1.5 text-xs font-bold ring-1 ${getManagementStatusBadgeClass(
+                                  order.management_status
+                                )}`}
+                              >
+                                {getManagementStatusLabel(order.management_status)}
+                              </span>
+                            </div>
                           </td>
 
                           <td className="px-5 py-4 text-sm text-text-secondary">

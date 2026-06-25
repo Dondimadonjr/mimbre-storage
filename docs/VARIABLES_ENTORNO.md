@@ -111,6 +111,15 @@ No se deben subir valores secretos al repositorio.
 - Con dominio propio: actualizar si se crea un correo con dominio propio.
 - Con Webpay producción: no cambia.
 
+### STORE_WHATSAPP_NUMBER
+
+- Uso: número de WhatsApp del negocio para botones de contacto en emails.
+- Tipo: privada/operativa.
+- Dónde se configura: `.env.local` y Vercel.
+- Valor recomendado actual: número del negocio en formato internacional, sin `+`, espacios ni guiones.
+- Con dominio propio: no cambia.
+- Con Webpay producción: no cambia.
+
 ### EMAIL_FROM_NAME
 
 - Uso: nombre visible del remitente.

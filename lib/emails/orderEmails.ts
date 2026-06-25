@@ -39,6 +39,35 @@ function getAddress(order: Order) {
     .join(", ");
 }
 
+function normalizePhoneForWhatsApp(phone: string | null | undefined) {
+  if (!phone) return "";
+  const digits = String(phone).replace(/\D/g, "");
+
+  if (digits.startsWith("56")) return digits;
+  if (digits.startsWith("09")) return `56${digits.slice(1)}`;
+  if (digits.startsWith("9")) return `56${digits}`;
+
+  return digits;
+}
+
+function buildWhatsAppURL(phone: string, message: string) {
+  const encoded = encodeURIComponent(message);
+  return `https://wa.me/${phone}?text=${encoded}`;
+}
+
+function renderActionButton(label: string, url: string) {
+  return `
+    <a
+      href="${escapeHtml(url)}"
+      style="display:inline-block;width:100%;max-width:240px;margin:0 0 12px;padding:14px 18px;border-radius:16px;background:#6f4c2b;color:#ffffff;font-weight:900;text-decoration:none;text-align:center;"
+      target="_blank"
+      rel="noreferrer noopener"
+    >
+      ${escapeHtml(label)}
+    </a>
+  `;
+}
+
 function getFromAddress() {
   const fromName = process.env.EMAIL_FROM_NAME;
   const fromAddress = process.env.EMAIL_FROM_ADDRESS;
@@ -150,6 +179,15 @@ function buildOwnerHtml(order: Order, items: OrderItem[]) {
   const address = getAddress(order);
   const orderCode = getOrderCode(order);
 
+  const panelUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/panel-rm?orderId=${encodeURIComponent(order.id)}`;
+  const customerPhone = normalizePhoneForWhatsApp(order.customer_phone);
+  const customerWhatsAppLink = customerPhone
+    ? buildWhatsAppURL(
+        customerPhone,
+        `Hola ${order.customer_name || ""}, estoy viendo tu pedido #${getOrderCode(order)} en Raíz y Mimbre y quiero coordinar la entrega.`
+      )
+    : "";
+
   return renderEmailShell({
     eyebrow: "Pedido pagado",
     title: "Nuevo pedido",
@@ -179,6 +217,11 @@ function buildOwnerHtml(order: Order, items: OrderItem[]) {
       <h2 style="margin:0 0 12px;font-size:22px;line-height:1.2;color:#1f2a1f;">Productos</h2>
       ${renderItemsTable(items)}
 
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:22px;">
+        ${renderActionButton("Ver en panel admin", panelUrl)}
+        ${customerWhatsAppLink ? renderActionButton("Contactar por WhatsApp", customerWhatsAppLink) : ""}
+      </div>
+
       <p style="margin:22px 0 0;border-radius:16px;background:#FAF6F0;padding:16px;color:#6f6257;font-size:15px;line-height:1.6;">
         Revisa el pedido en el panel de administración y coordina entrega o retiro con el cliente.
       </p>
@@ -189,6 +232,17 @@ function buildOwnerHtml(order: Order, items: OrderItem[]) {
 function buildCustomerHtml(order: Order, items: OrderItem[]) {
   const address = getAddress(order);
   const orderCode = getOrderCode(order);
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const productsUrl = `${siteUrl}/productos`;
+  const storeWhatsApp =
+    process.env.STORE_WHATSAPP_NUMBER || process.env.NEXT_PUBLIC_WHATSAPP || "";
+  const storeWhatsAppLink = storeWhatsApp
+    ? buildWhatsAppURL(
+        storeWhatsApp,
+        `Hola, quiero consultar sobre mi pedido #${getOrderCode(order)} y coordinar la entrega.`
+      )
+    : "";
 
   return renderEmailShell({
     eyebrow: "Compra confirmada",
@@ -217,6 +271,11 @@ function buildCustomerHtml(order: Order, items: OrderItem[]) {
         ${renderInfoRow("Teléfono", order.customer_phone)}
         ${renderInfoRow("Dirección", address)}
         ${renderInfoRow("Comentario", order.customer_comment)}
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:22px;">
+        ${storeWhatsAppLink ? renderActionButton("Contactar por WhatsApp", storeWhatsAppLink) : ""}
+        ${renderActionButton("Volver a la tienda", productsUrl)}
       </div>
 
       <p style="margin:22px 0 0;color:#1f2a1f;font-size:15px;line-height:1.7;">
